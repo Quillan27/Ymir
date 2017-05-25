@@ -9,7 +9,9 @@ public class Window extends JFrame {
     //TODO Change dynamically based on OS.
     public final String LOOKANDFEEL = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
 
-    public Sidebar s; //Panel to the right with controls.
+    //Panel to the right with controls.
+    public Sidebar s;
+
     public Container c;
 
     public Window(String title, int mapWidth, int mapHeight){

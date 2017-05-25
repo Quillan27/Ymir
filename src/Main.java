@@ -5,8 +5,8 @@
 //The main control class.
 public class Main {
 
-    public int mapWidth = 600;
-    public int mapHeight = 500;
+    public int mapWidth = 800;
+    public int mapHeight = 600;
 
     public String title = "Ymir";
 
