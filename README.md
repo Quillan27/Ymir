@@ -1,2 +1,2 @@
 # Ymir
-A procedural generation world-builder
+a 2D procedural world generator
