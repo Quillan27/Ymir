@@ -83,9 +83,9 @@ public class Sidebar extends JPanel{
         politicalButton.setToolTipText("Switch to Political View");
         climateButton.setToolTipText("Switch to Climate View");
         biomeButton.setToolTipText("Switch to Biome View");
-        newMapButton.setToolTipText("New Map");
-        settingsButton.setToolTipText("Settings");
-        saveButton.setToolTipText("Save");
+        newMapButton.setToolTipText("Generate New Map");
+        settingsButton.setToolTipText("Change Settings");
+        saveButton.setToolTipText("Save World");
 
         //consistent fonts
         elevationButton.setFont(new Font("Roboto", Font.PLAIN, 12));
@@ -144,6 +144,7 @@ public class Sidebar extends JPanel{
         gc.gridy = 4;
         add(biomeButton, gc);
 
+        //Cell size is now 1 to accommodate 3 components in the last row.
         gc.gridwidth = 1;
 
         //New Map
@@ -152,8 +153,6 @@ public class Sidebar extends JPanel{
         gc.gridx = 0;
         gc.gridy = 5;
         add(newMapButton, gc);
-
-        //Cell size is now 1 to accommodate 2 components in the last row.
 
         //Save
         gc.ipadx = 0;
@@ -168,6 +167,5 @@ public class Sidebar extends JPanel{
         gc.gridx = 2;
         gc.gridy = 5;
         add(settingsButton, gc);
-
     }
 }

@@ -11,17 +11,42 @@ public class Main {
     public String title = "Ymir";
 
     public Window w;
+    public Sidebar s;
 
     public static void main(String[] args){
         new Main();
     }
 
     public Main(){
-
         //Create a new Window
-        w = new Window(title, mapWidth, mapHeight);
+        s = new Sidebar(mapHeight);
+        w = new Window(title, mapWidth, mapHeight, s);
         w.setVisible(true);
 
+        //Initializes the loop
+        loop();
+    }
+
+    public void loop(){
+
+        while(27==27){
+            if(s.newMapButton.getModel().isPressed()){
+                System.out.println("Woot!");
+                createMap("");
+            }
+        }
+    }
+
+    public void createMap(String name){
+        if(name.equals("")){
+            name = getRandomName();
+        }
+
+        s.worldName.setText(name);
+    }
+
+    public String getRandomName(){
+        return "Random";
     }
 
 }

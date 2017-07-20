@@ -10,11 +10,11 @@ public class Window extends JFrame {
     public final String LOOKANDFEEL = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
 
     //Panel to the right with controls.
-    public Sidebar s;
+    //public Sidebar s;
 
     public Container c;
 
-    public Window(String title, int mapWidth, int mapHeight){
+    public Window(String title, int mapWidth, int mapHeight, Sidebar s){
 
         //Window Settings
         setTitle(title);
@@ -23,9 +23,6 @@ public class Window extends JFrame {
         setSize(mapWidth + 200, mapHeight);
         setLocationRelativeTo(null);
         setResizable(false);
-
-        //Init Sidebar
-        s = new Sidebar(mapHeight);
 
         //Add Sidebar aligned to the left.
         c = getContentPane();
