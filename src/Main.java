@@ -12,14 +12,15 @@ public class Main {
 
     public Window w;
     public Sidebar s;
+    public static Main m;
 
     public static void main(String[] args){
-        new Main();
+        m = new Main();
     }
 
     public Main(){
         //Create a new Window
-        s = new Sidebar(mapHeight);
+        s = new Sidebar(mapHeight, this);
         w = new Window(title, mapWidth, mapHeight, s);
         w.setVisible(true);
 
@@ -28,25 +29,25 @@ public class Main {
     }
 
     public void loop(){
+        while(true){
 
-        while(27==27){
-            if(s.newMapButton.getModel().isPressed()){
-                System.out.println("Woot!");
-                createMap("");
-            }
         }
     }
 
+    //Create a new map
     public void createMap(String name){
         if(name.equals("")){
             name = getRandomName();
         }
 
         s.worldName.setText(name);
+        w.setTitle("Ymir - " + name);
     }
 
+    //TODO Finish method
+    //Creates a random name
     public String getRandomName(){
-        return "Random";
+        return "New World";
     }
 
 }

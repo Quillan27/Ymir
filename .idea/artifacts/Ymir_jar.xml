@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Ymir:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Ymir_jar</output-path>
-    <root id="archive" name="Ymir.jar">
-      <element id="module-output" name="Ymir" />
-    </root>
-  </artifact>
-</component>

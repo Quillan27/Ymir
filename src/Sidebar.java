@@ -1,6 +1,10 @@
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +15,8 @@ public class Sidebar extends JPanel{
     public Dimension d = new Dimension();
 
     public JLabel worldName;
+
+    public Handler h;
 
     //buttons
     public JButton elevationButton;
@@ -30,9 +36,11 @@ public class Sidebar extends JPanel{
     public Image settingsIcon;
     public Image saveIcon;
     
+    public Main m;
 
-
-    public Sidebar(int mapHeight){
+    public Sidebar(int mapHeight, Main m){
+        this.m = m;
+        h = new Handler();
 
         //Panel fill the window's height and the last 200 pixels on the width.
         d.width = 200;
@@ -40,7 +48,7 @@ public class Sidebar extends JPanel{
         setPreferredSize(d);
 
         //dark grey border
-        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        setBorder(BorderFactory.createLineBorder(Color.decode("#052D49")));
 
         //configure buttons
         worldName = new JLabel("World Name");
@@ -68,6 +76,7 @@ public class Sidebar extends JPanel{
 
         //set font for world name
         worldName.setFont(new Font("Roboto", Font.BOLD, 24));
+        worldName.setForeground(Color.decode("#052D49"));
 
         //set icons
         elevationButton.setIcon(new ImageIcon(elevationIcon));
@@ -96,7 +105,7 @@ public class Sidebar extends JPanel{
         settingsButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         saveButton.setFont(new Font("Roboto", Font.PLAIN, 12));
 
-
+        newMapButton.addActionListener(h);
         //set layout type
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -167,5 +176,35 @@ public class Sidebar extends JPanel{
         gc.gridx = 2;
         gc.gridy = 5;
         add(settingsButton, gc);
+    }
+
+    private class Handler implements ActionListener, KeyListener {
+
+        public Handler(){
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if(e.getSource() == newMapButton){
+                String name  = "";
+                m.createMap(name);
+            }
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
     }
 }
