@@ -2,6 +2,8 @@
 
 //Ymir is a 2D procedural world generator.
 
+import com.miolean.random.*;
+
 //The main control class.
 public class Main {
 
@@ -47,7 +49,15 @@ public class Main {
     //TODO Finish method
     //Creates a random name
     public String getRandomName(){
-        return "New World";
+        String result;
+
+        WordRandom random = new WordRandom();
+        double ran = Math.random();
+        if(ran < .1) result = random.nextWord(1);
+        else if(ran < .2) result = random.nextWord(3);
+        else result = random.nextWord(2);
+
+        return result.substring(0, 1).toUpperCase() + result.substring(1, result.length());
     }
 
 }

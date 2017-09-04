@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="RandomWords">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/com/miolean/random/RandomWords.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
