@@ -24,5 +24,4 @@ public class Engine {
         window = new Window(title, mapWidth, mapHeight, sidebar, map);
         window.setVisible(true);
     }
-
 }

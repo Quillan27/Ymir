@@ -22,7 +22,7 @@ public class Map extends JLabel {
         setPreferredSize(d);
 
         //default to black
-        color = toRGBAInt(119,148,198,255);
+        color = hexToInt("#7794c6");
 
         mapImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -36,7 +36,6 @@ public class Map extends JLabel {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 mapImg.setRGB(i, j, color);
-                System.out.println(color);
             }
         }
 
@@ -52,14 +51,23 @@ public class Map extends JLabel {
 
     }
 
-    private int toRGBAInt(int r, int g, int b, int a){
+    private int hexToInt(String hex){
 
+        System.out.println("Color: "+hex);
+
+        //Get substring and parse an int from the hexidecimal, 0-255
+        int r = Integer.parseInt(hex.substring(1,3),16);
+        int g = Integer.parseInt(hex.substring(3,5),16);
+        int b = Integer.parseInt(hex.substring(5,7),16);
+        int a = 255;
+
+        //combine into one integer using bit manipulation
         int c = 0;
         c += a<<24;
         c += r<<16;
         c += g<<8;
         c += b;
-        System.out.println("Color: "+c);
+
         return c;
 
     }
