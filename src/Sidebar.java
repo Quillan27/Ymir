@@ -1,5 +1,3 @@
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,13 +59,13 @@ public class Sidebar extends JPanel {
         //get resources for icons
         try {
 
-            elevationIcon = ImageIO.read(getClass().getResource("elevation.png"));
-            politicalIcon = ImageIO.read(getClass().getResource("political.png"));
-            climateIcon = ImageIO.read(getClass().getResource("climate.png"));
-            biomeIcon = ImageIO.read(getClass().getResource("biome.png"));
-            newMapIcon = ImageIO.read(getClass().getResource("newMap.png"));
-            settingsIcon = ImageIO.read(getClass().getResource("settings.png"));
-            saveIcon = ImageIO.read(getClass().getResource("save.png"));
+            elevationIcon = ImageIO.read(getClass().getResource("icons/elevation.png"));
+            politicalIcon = ImageIO.read(getClass().getResource("icons/political.png"));
+            climateIcon = ImageIO.read(getClass().getResource("icons/climate.png"));
+            biomeIcon = ImageIO.read(getClass().getResource("icons/biome.png"));
+            newMapIcon = ImageIO.read(getClass().getResource("icons/newMap.png"));
+            settingsIcon = ImageIO.read(getClass().getResource("icons/settings.png"));
+            saveIcon = ImageIO.read(getClass().getResource("icons/save.png"));
 
         } catch (IOException e) {
 

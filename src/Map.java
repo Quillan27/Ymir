@@ -10,11 +10,12 @@ public class Map extends JLabel {
     private int height;
     public BufferedImage mapImg;
     private Dimension d;
+    private Generator generator;
 
     private int color;
 
     public Map(int width, int height) {
-
+        generator = new Generator();
         this.width = width;
         this.height = height;
 
@@ -25,19 +26,16 @@ public class Map extends JLabel {
         color = hexToInt("#7794c6");
 
         mapImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-        newMap(getRandomWorldName());
+        setText("  No Map Loaded");
 
     }
 
     public void newMap(String name) {
+        //activate the generator!!
+        int[][][] world = generator.generateNewWorld();
 
-        //map changes, solid for now
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                mapImg.setRGB(i, j, color);
-            }
-        }
+        //convert to image
+        //TODO
 
         //display map
         setIcon(new ImageIcon(mapImg));
