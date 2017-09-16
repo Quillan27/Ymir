@@ -1,57 +1,53 @@
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 //A builder for the control panel (sidebar) in the main application window.
-public class Sidebar extends JPanel{
+public class Sidebar extends JPanel {
 
-    public Dimension d = new Dimension();
+    public Dimension d;
 
     public JLabel worldName;
 
-    public Handler h;
+    private Handler handler;
+    private Map map;
 
     //buttons
-    public JButton elevationButton;
-    public JButton politicalButton;
-    public JButton climateButton;
-    public JButton biomeButton;
-    public JButton newMapButton;
-    public JButton settingsButton;
-    public JButton saveButton;
+    private JButton elevationButton;
+    private JButton politicalButton;
+    private JButton climateButton;
+    private JButton biomeButton;
+    private JButton newMapButton;
+    private JButton saveButton;
+    private JButton settingsButton;
 
     //icons
-    public Image elevationIcon;
-    public Image politicalIcon;
-    public Image climateIcon;
-    public Image biomeIcon;
-    public Image newMapIcon;
-    public Image settingsIcon;
-    public Image saveIcon;
-    
-    public Main m;
+    private Image elevationIcon;
+    private Image politicalIcon;
+    private Image climateIcon;
+    private Image biomeIcon;
+    private Image newMapIcon;
+    private Image saveIcon;
+    private Image settingsIcon;
 
-    public Sidebar(int mapHeight, Main m){
-        this.m = m;
-        h = new Handler();
+    public Sidebar(int mapHeight, Map map) {
+
+        this.map = map;
+        handler = new Handler();
 
         //Panel fill the window's height and the last 200 pixels on the width.
-        d.width = 200;
-        d.height = mapHeight;
+        d = new Dimension(200, mapHeight);
         setPreferredSize(d);
 
-        //dark grey border
-        setBorder(BorderFactory.createLineBorder(Color.decode("#052D49")));
+        /* CONFIGURE GUI */
 
-        //configure buttons
+        //set world name
         worldName = new JLabel("World Name");
+        worldName.setFont(new Font("Roboto", Font.BOLD, 24));
+
         elevationButton = new JButton("Elevation");
         politicalButton = new JButton("Poltical");
         climateButton = new JButton("Climate");
@@ -62,21 +58,20 @@ public class Sidebar extends JPanel{
 
         //get resources for icons
         try {
-            elevationIcon = ImageIO.read(getClass().getResource("elevation.png"));
-            politicalIcon = ImageIO.read(getClass().getResource("political.png"));
-            climateIcon = ImageIO.read(getClass().getResource("climate.png"));
-            biomeIcon = ImageIO.read(getClass().getResource("biome.png"));
-            newMapIcon = ImageIO.read(getClass().getResource("newMap.png"));
-            settingsIcon = ImageIO.read(getClass().getResource("settings.png"));
-            saveIcon = ImageIO.read(getClass().getResource("save.png"));
+
+            elevationIcon = ImageIO.read(getClass().getResource("icons/elevation.png"));
+            politicalIcon = ImageIO.read(getClass().getResource("icons/political.png"));
+            climateIcon = ImageIO.read(getClass().getResource("icons/climate.png"));
+            biomeIcon = ImageIO.read(getClass().getResource("icons/biome.png"));
+            newMapIcon = ImageIO.read(getClass().getResource("icons/newMap.png"));
+            settingsIcon = ImageIO.read(getClass().getResource("icons/settings.png"));
+            saveIcon = ImageIO.read(getClass().getResource("icons/save.png"));
+
         } catch (IOException e) {
 
             e.printStackTrace();
-        }
 
-        //set font for world name
-        worldName.setFont(new Font("Roboto", Font.BOLD, 24));
-        worldName.setForeground(Color.decode("#052D49"));
+        }
 
         //set icons
         elevationButton.setIcon(new ImageIcon(elevationIcon));
@@ -84,8 +79,8 @@ public class Sidebar extends JPanel{
         climateButton.setIcon(new ImageIcon(climateIcon));
         biomeButton.setIcon(new ImageIcon(biomeIcon));
         newMapButton.setIcon(new ImageIcon(newMapIcon));
-        settingsButton.setIcon(new ImageIcon(settingsIcon));
         saveButton.setIcon(new ImageIcon(saveIcon));
+        settingsButton.setIcon(new ImageIcon(settingsIcon));
 
         //nifty tooltips
         elevationButton.setToolTipText("Switch to Elevation View");
@@ -93,8 +88,8 @@ public class Sidebar extends JPanel{
         climateButton.setToolTipText("Switch to Climate View");
         biomeButton.setToolTipText("Switch to Biome View");
         newMapButton.setToolTipText("Generate New Map");
-        settingsButton.setToolTipText("Change Settings");
         saveButton.setToolTipText("Save World");
+        settingsButton.setToolTipText("Change Settings");
 
         //consistent fonts
         elevationButton.setFont(new Font("Roboto", Font.PLAIN, 12));
@@ -102,10 +97,20 @@ public class Sidebar extends JPanel{
         climateButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         biomeButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         newMapButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        settingsButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         saveButton.setFont(new Font("Roboto", Font.PLAIN, 12));
+        settingsButton.setFont(new Font("Roboto", Font.PLAIN, 12));
 
-        newMapButton.addActionListener(h);
+        //Add listeners
+        elevationButton.addActionListener(handler);
+        politicalButton.addActionListener(handler);
+        climateButton.addActionListener(handler);
+        biomeButton.addActionListener(handler);
+        newMapButton.addActionListener(handler);
+        saveButton.addActionListener(handler);
+        settingsButton.addActionListener(handler);
+
+        /* LAYOUT */
+
         //set layout type
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -176,35 +181,45 @@ public class Sidebar extends JPanel{
         gc.gridx = 2;
         gc.gridy = 5;
         add(settingsButton, gc);
+
     }
 
-    private class Handler implements ActionListener, KeyListener {
+    private class Handler implements ActionListener {
 
-        public Handler(){
-        }
+        private Handler(){}
 
-        @Override
+        @Override   //Button functions
         public void actionPerformed(ActionEvent e) {
 
-            if(e.getSource() == newMapButton){
+            //Elevation Button Functions
+            if(e.getSource() == elevationButton){}
+
+            //Political Button Functions
+            if(e.getSource() == politicalButton){}
+
+            //Climate Button Functions
+            if(e.getSource() == climateButton){}
+
+            //Biome Button Functions
+            if(e.getSource() == biomeButton){}
+
+            //New Map Button, creates a new map. see Map.java
+            if(e.getSource() == newMapButton) {
+
                 String name  = "";
-                m.createMap(name);
+                if(name.equals("")){
+                    name = map.getRandomWorldName();
+                }
+                worldName.setText(name);
+                map.newMap(name);
+
             }
-        }
 
-        @Override
-        public void keyTyped(KeyEvent e) {
+            //Save Button Functions
+            if(e.getSource() == saveButton){}
 
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
+            //Settings Button Functions
+            if(e.getSource() == settingsButton){}
         }
     }
 }
