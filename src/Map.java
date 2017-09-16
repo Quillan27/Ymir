@@ -1,5 +1,7 @@
 //Karl Ramberg
 
+import com.miolean.random.WordRandom;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -42,11 +44,16 @@ public class Map extends JLabel {
 
     }
 
-    //TODO finish method
     public String getRandomWorldName(){
+        String result;
 
-        return "New World";
+        WordRandom random = new WordRandom();
+        double ran = Math.random();
+        if(ran < .1) result = random.nextWord(1);
+        else if(ran < .2) result = random.nextWord(3);
+        else result = random.nextWord(2);
 
+        return result.substring(0, 1).toUpperCase() + result.substring(1, result.length());
     }
 
     private int hexToInt(String hex){
