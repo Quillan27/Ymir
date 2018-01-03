@@ -13,13 +13,13 @@ import java.awt.image.renderable.RenderableImage;
 import java.nio.Buffer;
 import java.text.AttributedCharacterIterator;
 
-//The builder class for the applications window.
+// the builder class for the applications window.
 public class Window extends JFrame {
 
-    //TODO Change dynamically based on OS.
+    // TODO change dynamically based on OS.
     private final String LOOKANDFEEL = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
 
-    //Panel to the right with controls.
+    // panel to the right with controls.
     private Sidebar sidebar;
     private Map map;
     private Container container;
@@ -29,25 +29,24 @@ public class Window extends JFrame {
         this.sidebar = sidebar;
         this.map = map;
 
-        //Window Settings
+        // window settings
         setTitle(title);
         setLookAndFeel();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(mapWidth + 200, mapHeight); //200 extra for the sidebar
+        setSize(mapWidth + 200, mapHeight); // 200 extra for the sidebar
         setLocationRelativeTo(null);
         setResizable(false);
 
-        //Add Sidebar aligned to the left and Map to the right.
+        // add sidebar aligned to the left and Map to the right.
         container = getContentPane();
         container.add(sidebar, BorderLayout.EAST);
         container.add(map, BorderLayout.WEST);
 
     }
 
-
-
     public void setLookAndFeel(){
 
+        // your standard java exception handling bullshit
         try {
             UIManager.setLookAndFeel(LOOKANDFEEL);
         } catch (IllegalAccessException e) {
@@ -59,7 +58,5 @@ public class Window extends JFrame {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
     }
-
 }

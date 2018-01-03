@@ -211,7 +211,11 @@ public class Sidebar extends JPanel {
                     name = map.getRandomWorldName();
                 }
                 worldName.setText(name);
-                map.newMap(name);
+                try {
+                    map.newMap(name);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
 
             }
 

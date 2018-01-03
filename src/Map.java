@@ -3,57 +3,69 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.ArrayList;
 
+
+// class for raw integer conversion and map displaying
 public class Map extends JLabel {
 
-    private int width;
-    private int height;
-    public BufferedImage mapImg;
-    private Dimension d;
+    public BufferedImage img;
     private Generator generator;
 
-    private int color;
-
     public Map(int width, int height) {
-        generator = new Generator();
-        this.width = width;
-        this.height = height;
+        generator = new Generator(width, height);
 
-        d = new Dimension(width, height);
-        setPreferredSize(d);
+        setPreferredSize(new Dimension(width, height));
 
-        //default to black
-        color = hexToInt("#7794c6");
-
-        mapImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        setText("  No Map Loaded");
-
+        img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        setText("No Map Loaded");
     }
 
-    public void newMap(String name) {
-        //activate the generator!!
-        int[][][] world = generator.generateNewWorld();
+    public void newMap(String name) throws IOException {
+        // activate the generator!!
+        int[][] vals = generator.generateNewWorld();
 
-        //convert to image
+        // convert to vals to img
         //TODO
+        valToImg(vals, 0);
 
-        //display map
-        setIcon(new ImageIcon(mapImg));
-
+        // display map
+        setIcon(new ImageIcon(img));
     }
 
-    //TODO finish method
+    // TODO implement random name gen
     public String getRandomWorldName(){
-
         return "New World";
-
     }
 
+    // converts integers to colors and puts them into image
+    private void valToImg(int[][] vals, int type) throws IOException {
+        ArrayList<String> palette;
+
+        switch(type){
+            case 1: palette = textToArr("res/text/politicalCol.txt");
+                    break;
+            case 2: palette = textToArr("res/text/climateCol.txt");
+                    break;
+            case 3: palette = textToArr("res/text/biomeCol.txt");
+                    break;
+            default: palette = textToArr("res/text/elevationCol.txt");
+                    break;
+        }
+
+        int col;
+        for(int i = 0; i < vals.length; i++){
+            for(int j = 0; j < vals[i].length; j++){
+                col = hexToInt(palette.get(vals[i][j]));
+                img.setRGB(i, j, col);
+            }
+        }
+    }
+
+    // #ffffff format to rbga integer
     private int hexToInt(String hex){
-
-        System.out.println("Color: "+hex);
-
-        //Get substring and parse an int from the hexidecimal, 0-255
+        // get substring and parse an int from the hexidecimal, 0-255
         int r = Integer.parseInt(hex.substring(1,3),16);
         int g = Integer.parseInt(hex.substring(3,5),16);
         int b = Integer.parseInt(hex.substring(5,7),16);
@@ -68,6 +80,20 @@ public class Map extends JLabel {
 
         return c;
 
+    }
+
+    // partitions a files lines to separate indices
+    private ArrayList<String> textToArr(String path) throws IOException {
+        ArrayList<String> lines = new ArrayList<String>();
+        String line;
+        BufferedReader br = new BufferedReader(new FileReader(path));
+
+        line = br.readLine();
+        while(line != null){
+            lines.add(line);
+            line = br.readLine();
+        }
+        return lines;
     }
 }
 

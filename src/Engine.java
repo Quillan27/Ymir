@@ -1,7 +1,5 @@
 //Karl Ramberg
 
-//Ymir is a 2D procedural world generator.
-
 //The main control class.
 public class Engine {
 
