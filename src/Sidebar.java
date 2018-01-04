@@ -192,16 +192,40 @@ public class Sidebar extends JPanel {
         public void actionPerformed(ActionEvent e) {
 
             //Elevation Button Functions
-            if(e.getSource() == elevationButton){}
+            if(e.getSource() == elevationButton){
+                try {
+                    map.switchMap(0);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             //Political Button Functions
-            if(e.getSource() == politicalButton){}
+            if(e.getSource() == politicalButton){
+                try {
+                    map.switchMap(1);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             //Climate Button Functions
-            if(e.getSource() == climateButton){}
+            if(e.getSource() == climateButton){
+                try {
+                    map.switchMap(2);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             //Biome Button Functions
-            if(e.getSource() == biomeButton){}
+            if(e.getSource() == biomeButton){
+                try {
+                    map.switchMap(3);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
 
             //New Map Button, creates a new map. see Map.java
             if(e.getSource() == newMapButton) {

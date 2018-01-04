@@ -11,7 +11,9 @@ import java.util.ArrayList;
 public class Map extends JLabel {
 
     public BufferedImage img;
+    public BufferedImage elevImg;
     private Generator generator;
+    private int[][] vals;
 
     public Map(int width, int height) {
         generator = new Generator(width, height);
@@ -24,13 +26,20 @@ public class Map extends JLabel {
 
     public void newMap(String name) throws IOException {
         // activate the generator!!
-        int[][] vals = generator.generateNewWorld();
+        vals = generator.generateNewWorld();
 
         // convert to vals to img
         //TODO
         valToImg(vals, 0);
 
         // display map
+        setIcon(new ImageIcon(img));
+        elevImg = img;
+    }
+
+    public void switchMap(int type) throws IOException {
+        vals = generator.switchType(type);
+        valToImg(vals, type);
         setIcon(new ImageIcon(img));
     }
 

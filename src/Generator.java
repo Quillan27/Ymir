@@ -21,10 +21,22 @@ public class Generator {
         elevation = new int[width][height];
 
         //TODO elevation gen
+        int col = 0;
+        int count = 0;
         for(int i = 0; i < elevation.length; i++){
             for(int j = 0; j < elevation[i].length; j++){
-                elevation[i][j] = 14; // temp val
+                elevation[i][j] = col; // temp val
+                if(count>16){
+                    count=0;
+                    col++;
+                }
+                if(col>31){
+                    col = 31;
+                }
+                count++;
             }
+            col = 0;
+            count = 0;
         }
 
         // TODO pol derives from elev
@@ -33,6 +45,10 @@ public class Generator {
 
         // TODO bio derives from elev
 
+        return elevation;
+    }
+
+    public int[][] switchType(int type){
         return elevation;
     }
 }
