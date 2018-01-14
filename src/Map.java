@@ -13,7 +13,7 @@ public class Map extends JLabel {
     public BufferedImage img;
     public BufferedImage elevImg;
     private Generator generator;
-    private int[][] vals;
+    private double[][] vals;
 
     public Map(int width, int height) {
         generator = new Generator(width, height);
@@ -49,7 +49,7 @@ public class Map extends JLabel {
     }
 
     // converts integers to colors and puts them into image
-    private void valToImg(int[][] vals, int type) throws IOException {
+    private void valToImg(double[][] vals, int type) throws IOException {
         ArrayList<String> palette;
 
         switch(type){
@@ -66,7 +66,8 @@ public class Map extends JLabel {
         int col;
         for(int i = 0; i < vals.length; i++){
             for(int j = 0; j < vals[i].length; j++){
-                col = hexToInt(palette.get(vals[i][j]));
+                vals[i][j] = ((vals[i][j]+1)*16);
+                col = hexToInt(palette.get((int)vals[i][j]));
                 img.setRGB(i, j, col);
             }
         }
