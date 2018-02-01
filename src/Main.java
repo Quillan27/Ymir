@@ -1,7 +1,7 @@
 //Karl Ramberg
 
-//The main control class.
-public class Engine {
+// the main starter class
+public class Main {
 
     private int mapWidth = 800;
     private int mapHeight = 600;
@@ -13,10 +13,10 @@ public class Engine {
     private Map map;
 
     public static void main(String[] args){
-        new Engine();
+        new Main();
     }
 
-    public Engine(){
+    public Main(){
         map = new Map(mapWidth, mapHeight);
         sidebar = new Sidebar(mapHeight, map);
         window = new Window(title, mapWidth, mapHeight, sidebar, map);

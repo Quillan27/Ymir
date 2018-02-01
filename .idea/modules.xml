@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Ymir.iml" filepath="$PROJECT_DIR$/Ymir.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ymir.iml" filepath="$PROJECT_DIR$/ymir.iml" />
     </modules>
   </component>
 </project>

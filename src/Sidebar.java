@@ -1,3 +1,5 @@
+//Karl Ramberg
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +17,7 @@ public class Sidebar extends JPanel {
     private Handler handler;
     private Map map;
 
-    //buttons
+    // buttons
     private JButton elevationButton;
     private JButton politicalButton;
     private JButton climateButton;
@@ -24,7 +26,7 @@ public class Sidebar extends JPanel {
     private JButton saveButton;
     private JButton settingsButton;
 
-    //icons
+    // icons
     private Image elevationIcon;
     private Image politicalIcon;
     private Image climateIcon;
@@ -38,13 +40,13 @@ public class Sidebar extends JPanel {
         this.map = map;
         handler = new Handler();
 
-        //Panel fill the window's height and the last 200 pixels on the width.
+        // panel fill the window's height and the last 200 pixels on the width.
         d = new Dimension(200, mapHeight);
         setPreferredSize(d);
 
         /* CONFIGURE GUI */
 
-        //set world name
+        // set world name
         worldName = new JLabel("World Name");
         worldName.setFont(new Font("Roboto", Font.BOLD, 24));
 
@@ -56,9 +58,8 @@ public class Sidebar extends JPanel {
         settingsButton = new JButton("");
         saveButton = new JButton("");
 
-        //get resources for icons
+        // get resources for icons
         try {
-
             elevationIcon = ImageIO.read(getClass().getResource("icons/elevation.png"));
             politicalIcon = ImageIO.read(getClass().getResource("icons/political.png"));
             climateIcon = ImageIO.read(getClass().getResource("icons/climate.png"));
@@ -66,14 +67,11 @@ public class Sidebar extends JPanel {
             newMapIcon = ImageIO.read(getClass().getResource("icons/newMap.png"));
             settingsIcon = ImageIO.read(getClass().getResource("icons/settings.png"));
             saveIcon = ImageIO.read(getClass().getResource("icons/save.png"));
-
         } catch (IOException e) {
-
             e.printStackTrace();
-
         }
 
-        //set icons
+        // set icons
         elevationButton.setIcon(new ImageIcon(elevationIcon));
         politicalButton.setIcon(new ImageIcon(politicalIcon));
         climateButton.setIcon(new ImageIcon(climateIcon));
@@ -82,7 +80,7 @@ public class Sidebar extends JPanel {
         saveButton.setIcon(new ImageIcon(saveIcon));
         settingsButton.setIcon(new ImageIcon(settingsIcon));
 
-        //nifty tooltips
+        // nifty tooltips
         elevationButton.setToolTipText("Switch to Elevation View");
         politicalButton.setToolTipText("Switch to Political View");
         climateButton.setToolTipText("Switch to Climate View");
@@ -91,7 +89,7 @@ public class Sidebar extends JPanel {
         saveButton.setToolTipText("Save World");
         settingsButton.setToolTipText("Change Settings");
 
-        //consistent fonts
+        // consistent fonts, roboto masterrace
         elevationButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         politicalButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         climateButton.setFont(new Font("Roboto", Font.PLAIN, 12));
@@ -100,7 +98,7 @@ public class Sidebar extends JPanel {
         saveButton.setFont(new Font("Roboto", Font.PLAIN, 12));
         settingsButton.setFont(new Font("Roboto", Font.PLAIN, 12));
 
-        //Add listeners
+        // add listeners
         elevationButton.addActionListener(handler);
         politicalButton.addActionListener(handler);
         climateButton.addActionListener(handler);
@@ -111,71 +109,71 @@ public class Sidebar extends JPanel {
 
         /* LAYOUT */
 
-        //set layout type
+        // set layout type
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
 
-        //Buttons snap to the center.
+        // buttons snap to the center
         gc.anchor = GridBagConstraints.CENTER;
 
-        //padding between components
+        // padding between components
         gc.weightx = 0.5;
         gc.weighty = 0.5;
 
-        //Cell size is 3 for wider buttons.
+        // cell size is 3 for wider buttons
         gc.gridwidth = 3;
 
-        //World Name
+        // world name
         gc.gridx = 0;
         gc.gridy = 0;
         add(worldName, gc);
 
-        //Elevation
+        // elevation
         gc.ipadx = 10;
         gc.ipady = 5;
         gc.gridx = 0;
         gc.gridy = 1;
         add(elevationButton, gc);
 
-        //Political
+        // political
         gc.ipadx = 19;
         gc.ipady = 5;
         gc.gridx = 0;
         gc.gridy = 2;
         add(politicalButton, gc);
 
-        //Climate
+        // climate
         gc.ipadx = 20;
         gc.ipady = 5;
         gc.gridx = 0;
         gc.gridy = 3;
         add(climateButton, gc);
 
-        //Biome
+        // biome
         gc.ipadx = 27;
         gc.ipady = 5;
         gc.gridx = 0;
         gc.gridy = 4;
         add(biomeButton, gc);
 
-        //Cell size is now 1 to accommodate 3 components in the last row.
+        // cell size is now 1 to accommodate 3 components in the last row
         gc.gridwidth = 1;
 
-        //New Map
+        // new map
         gc.ipadx = 0;
         gc.ipady = 0;
         gc.gridx = 0;
         gc.gridy = 5;
         add(newMapButton, gc);
 
-        //Save
+        // save
         gc.ipadx = 0;
         gc.ipady = 0;
         gc.gridx = 1;
         gc.gridy = 5;
         add(saveButton, gc);
 
-        //Settings
+        // settings
         gc.ipadx = 0;
         gc.ipady = 0;
         gc.gridx = 2;
@@ -188,50 +186,37 @@ public class Sidebar extends JPanel {
 
         private Handler(){}
 
-        @Override   //Button functions
+        @Override   // button functions
         public void actionPerformed(ActionEvent e) {
 
-            //Elevation Button Functions
+            // elevation button functions
             if(e.getSource() == elevationButton){
                 try {
                     map.switchMap(0);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            }
-
-            //Political Button Functions
-            if(e.getSource() == politicalButton){
+            }else if(e.getSource() == politicalButton) { // political button functions
                 try {
                     map.switchMap(1);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            }
-
-            //Climate Button Functions
-            if(e.getSource() == climateButton){
+            }else if(e.getSource() == climateButton) { // climate button functions
                 try {
                     map.switchMap(2);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            }
-
-            //Biome Button Functions
-            if(e.getSource() == biomeButton){
+            }else if(e.getSource() == biomeButton) { // biome button functions
                 try {
                     map.switchMap(3);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-            }
-
-            //New Map Button, creates a new map. see Map.java
-            if(e.getSource() == newMapButton) {
-
+            } else if(e.getSource() == newMapButton) { // new map button, see Map.java
                 String name  = "";
-                if(name.equals("")){
+                if(name.equals("")) {
                     name = map.getRandomWorldName();
                 }
                 worldName.setText(name);
@@ -240,14 +225,10 @@ public class Sidebar extends JPanel {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+            }else if(e.getSource() == saveButton) {  // TODO save button functions
+            }else if(e.getSource() == settingsButton){ // TODO settings button functions
 
             }
-
-            //Save Button Functions
-            if(e.getSource() == saveButton){}
-
-            //Settings Button Functions
-            if(e.getSource() == settingsButton){}
         }
     }
 }

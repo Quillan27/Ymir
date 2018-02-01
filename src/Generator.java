@@ -7,7 +7,7 @@ public class Generator {
 
     // elevation, political, climate, biome map values
     private double[][] elevation;
-    private double[][] poltical;
+    private double[][] political;
     private double[][] climate;
     private double[][] biome;
 
@@ -15,16 +15,16 @@ public class Generator {
 
     private int width, height;
 
-    public Generator(int width, int height){
+    public Generator(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    //elevation is default
-    public double[][] generateNewWorld(){
+    // elevation is default
+    public double[][] generateNewWorld() {
         elevation = new double[width][height];
 
-        //TODO elevation gen
+        // TODO elevation gen
         int col = 0;
         for(int i = 0; i < elevation.length; i++){
             for(int j = 0; j < elevation[i].length; j++){
@@ -41,7 +41,8 @@ public class Generator {
         return elevation;
     }
 
-    public double perlin(double x, double y){
+    // very WIP perlin noise
+    public double perlin(double x, double y) {
         int x0 = floor(x);
         int x1 = x0 + 1;
         int y0 = floor(y);
@@ -60,19 +61,25 @@ public class Generator {
         return lerp(ix0, ix1, sy);
     }
 
-    public int floor(double num){
+    public int floor(double num) {
         return (int) (num - (num%1.0));
     }
 
-    public double lerp(double a0, double a1, double w){
+    public double lerp(double a0, double a1, double w) {
         return (1.0 - w)*a0 + w*a1;
     }
 
-    public double grad(int ix, int iy, double x, double y){
+    public double grad(int ix, int iy, double x, double y) {
         return 1.0;
     }
 
-    public double[][] switchType(int type){
-        return elevation; // TODO switch-case
+    public double[][] switchType(int type) {
+        switch(type){
+            case 0: return elevation;
+            case 1: return political;
+            case 2: return climate;
+            case 3: return biome;
+            default: return elevation;
+        }
     }
 }

@@ -2,16 +2,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
-import java.nio.Buffer;
-import java.text.AttributedCharacterIterator;
 
 // the builder class for the applications window.
 public class Window extends JFrame {
@@ -24,8 +14,7 @@ public class Window extends JFrame {
     private Map map;
     private Container container;
 
-    public Window(String title, int mapWidth, int mapHeight, Sidebar sidebar, Map map){
-
+    public Window(String title, int mapWidth, int mapHeight, Sidebar sidebar, Map map) {
         this.sidebar = sidebar;
         this.map = map;
 
@@ -41,11 +30,9 @@ public class Window extends JFrame {
         container = getContentPane();
         container.add(sidebar, BorderLayout.EAST);
         container.add(map, BorderLayout.WEST);
-
     }
 
-    public void setLookAndFeel(){
-
+    public void setLookAndFeel() {
         // your standard java exception handling bullshit
         try {
             UIManager.setLookAndFeel(LOOKANDFEEL);
