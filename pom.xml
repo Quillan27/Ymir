@@ -15,4 +15,11 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <resources>
+        <resource>
+            <directory>res</directory>
+        </resource>
+    </resources>
+  </build>
 </project>

@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Window extends JFrame {
@@ -22,7 +23,7 @@ public class Window extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-
+        
         //create sidebar and default world
         w = new World(0);
         s = new Sidebar();
@@ -64,12 +65,12 @@ public class Window extends JFrame {
         private Image biomeIcon;
         private Image newMapIcon;
         private Image saveIcon;
-        private Image settingsIcon;  //TODO necessary?
+        private Image settingsIcon;
 
         public Sidebar() {
 
             h = new Handler();
-
+            
             // panel fill the world's height and the last 200 pixels on the width.
             System.out.println(w.getHeight());
             setPreferredSize(new Dimension(200, w.getHeight()));
@@ -90,13 +91,13 @@ public class Window extends JFrame {
 
             // get resources for icons
             try {
-                elevationIcon = ImageIO.read(getClass().getResource("res/icons/elevation.png"));
-                politicalIcon = ImageIO.read(getClass().getResource("res/icons/political.png"));
-                climateIcon = ImageIO.read(getClass().getResource("res/icons/climate.png"));
-                biomeIcon = ImageIO.read(getClass().getResource("res/icons/biome.png"));
-                newMapIcon = ImageIO.read(getClass().getResource("res/icons/newMap.png"));
-                settingsIcon = ImageIO.read(getClass().getResource("res/icons/settings.png"));
-                saveIcon = ImageIO.read(getClass().getResource("res/icons/save.png"));
+                elevationIcon = ImageIO.read(new FileInputStream("res/icons/elevation.png"));
+                politicalIcon = ImageIO.read(new FileInputStream("res/icons/political.png"));
+                climateIcon = ImageIO.read(new FileInputStream("res/icons/climate.png"));
+                biomeIcon = ImageIO.read(new FileInputStream("res/icons/biome.png"));
+                newMapIcon = ImageIO.read(new FileInputStream("res/icons/newMap.png"));
+                settingsIcon = ImageIO.read(new FileInputStream("res/icons/settings.png"));
+                saveIcon = ImageIO.read(new FileInputStream("res/icons/save.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -218,7 +219,7 @@ public class Window extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            System.out.println("actions are performed");
         }
     }
 }
