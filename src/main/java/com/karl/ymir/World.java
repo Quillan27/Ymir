@@ -12,7 +12,7 @@ public class World extends JLabel {
     private double[][] grid;
 
     private int type;
-
+    private String foobar = "foobar";
     private BufferedImage img;
 
     public World(int type) {
