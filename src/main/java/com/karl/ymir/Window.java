@@ -24,7 +24,7 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         
-        //create sidebar and default world
+        // create sidebar and default world
         w = new World(0);
         s = new Sidebar();
 
@@ -38,11 +38,14 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public void updateSize(World w){
+    public void updateSize(World w) {
+
         setSize(w.getWidth()+200, w.getHeight());
+
     }
 
     public class Sidebar extends JPanel {
+
         private static final long serialVersionUID = 1L;
 
 		public JLabel worldName;
@@ -75,7 +78,7 @@ public class Window extends JFrame {
             System.out.println(w.getHeight());
             setPreferredSize(new Dimension(200, w.getHeight()));
 
-            /* CONFIGURE GUI */
+            // CONFIGURE GUI
 
             // set world name
             worldName = new JLabel("No Map Loaded");
@@ -210,6 +213,7 @@ public class Window extends JFrame {
             gc.gridx = 2;
             gc.gridy = 5;
             add(settingsButton, gc);
+
         }
     }
 
@@ -219,7 +223,9 @@ public class Window extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
             System.out.println("actions are performed");
+
         }
     }
 }
