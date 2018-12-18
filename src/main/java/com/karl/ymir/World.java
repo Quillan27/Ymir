@@ -1,66 +1,36 @@
-// created by Karl Ramberg - Mar. 21 2018
 package com.karl.ymir;
 
-import javax.swing.*;
-import java.awt.image.BufferedImage;
+// handles generation for a world, no visuals
+// expect only pure math here, lol
 
-public class World extends JLabel {
-    private static final long serialVersionUID = 1L;
+public class World {
 
-	private int width, height;
+    private Map map;
 
-    private double[][] grid;
+    private double[][] elevGrid;
+    private double[][] poliGrid;
+    private double[][] climGrid;
+    private double[][] biomGrid;
 
-    private int type;
-    private BufferedImage img;
+    public World(Map map, int width, int height) {
+        this.map = map;
 
-    public World(int type) {
-        this.type = type;
-
-        if(this.type==0){ //default
-            width = 800;
-            height = 600;
-            img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            fillImg(hexToRGBA("#ff00ff"));
-        }
-
-        setIcon(new ImageIcon(img));
+        elevGrid = new double[map.getWidth()][map.getHeight()];
+        poliGrid = new double[map.getWidth()][map.getHeight()];
+        climGrid = new double[map.getWidth()][map.getHeight()];
+        biomGrid = new double[map.getWidth()][map.getHeight()];
     }
 
-    public void fillImg(int col) {
-        for(int i = 0; i < width; i++) {
-            for(int j = 0; j < height; j++) {
-                img.setRGB(i, j, col);
-            }
-        }
-        System.out.println("Image Filled");
+    public void saveWorld() {
+        System.out.println("World saved");
     }
 
-    // converts hexidecimal color notion to an int that Image.setRGB() can use
-    private int hexToRGBA(String hex) {
-
-        // get substring and parse an int from the hexidecimal, 0-255
-        int r = Integer.parseInt(hex.substring(1,3),16);
-        int g = Integer.parseInt(hex.substring(3,5),16);
-        int b = Integer.parseInt(hex.substring(5,7),16);
-        int a = 255;
-
-        // combine into one integer using bit manipulation
-        int c = 0;
-        c += a<<24;
-        c += r<<16;
-        c += g<<8;
-        c += b;
-
-        return c;
-
+    public void openWorld() {
+        System.out.println("Save open world?");
+        System.out.println("Opened world");
     }
 
-    public int getHeight(){
-        return height;
-    }
+    public void addPerlinNoise(double[][] grid) {
 
-    public int getWidth(){
-        return width;
     }
 }
