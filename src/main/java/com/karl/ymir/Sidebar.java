@@ -34,7 +34,7 @@ public class Sidebar extends JPanel {
 
     public Sidebar(Map map) {
 
-        h = new Handler();
+        h = new Handler(this);
 
         // panel fill the world's height and the last 200 pixels on the width.
         System.out.println(map.getHeight());
@@ -176,5 +176,61 @@ public class Sidebar extends JPanel {
         gc.gridy = 5;
         add(settingsButton, gc);
 
+    }
+
+    public JButton getElevationButton() {
+        return elevationButton;
+    }
+
+    public void setElevationButton(JButton elevationButton) {
+        this.elevationButton = elevationButton;
+    }
+
+    public JButton getPoliticalButton() {
+        return politicalButton;
+    }
+
+    public void setPoliticalButton(JButton politicalButton) {
+        this.politicalButton = politicalButton;
+    }
+
+    public JButton getClimateButton() {
+        return climateButton;
+    }
+
+    public void setClimateButton(JButton climateButton) {
+        this.climateButton = climateButton;
+    }
+
+    public JButton getBiomeButton() {
+        return biomeButton;
+    }
+
+    public void setBiomeButton(JButton biomeButton) {
+        this.biomeButton = biomeButton;
+    }
+
+    public JButton getNewMapButton() {
+        return newMapButton;
+    }
+
+    public void setNewMapButton(JButton newMapButton) {
+        this.newMapButton = newMapButton;
+    }
+
+    public JButton getSaveButton() {
+        return saveButton;
+    }
+
+    public void setSaveButton(JButton saveButton) {
+        this.saveButton = saveButton;
+    }
+
+    public JButton getSettingsButton() {
+        return settingsButton;
+    }
+
+    public void setSettingsButton(JButton settingsButton) {
+        this.settingsButton = settingsButton;
     }
 }

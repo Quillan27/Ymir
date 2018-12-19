@@ -5,12 +5,17 @@ import java.awt.event.ActionListener;
 
 public class Handler implements ActionListener {
 
-    public Handler() {}
+    private Sidebar s;
+    public Handler(Sidebar s) {
+        this.s = s;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
         System.out.println("actions are performed");
+        if(e.getSource() == s.getElevationButton()){
 
+        }
     }
 }

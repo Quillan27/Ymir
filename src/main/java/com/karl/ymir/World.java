@@ -5,20 +5,37 @@ package com.karl.ymir;
 
 public class World {
 
-    private Map map;
+    private Map m;
 
-    private double[][] elevGrid;
-    private double[][] poliGrid;
-    private double[][] climGrid;
-    private double[][] biomGrid;
+    private double[][] elevationGrid;
 
-    public World(Map map, int width, int height) {
-        this.map = map;
+    public World(Map m, int width, int height) {
+        this.m = m;
 
-        elevGrid = new double[map.getWidth()][map.getHeight()];
-        poliGrid = new double[map.getWidth()][map.getHeight()];
-        climGrid = new double[map.getWidth()][map.getHeight()];
-        biomGrid = new double[map.getWidth()][map.getHeight()];
+        elevationGrid = new double[this.m.getWidth()][this.m.getHeight()];
+
+        double col = 0.03125;
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++){
+/*                if(val < 1.0) {
+                    elevationGrid[x][y] = val;
+                    val += 0.001;
+                } else {
+                    val = -1.0;
+                    elevationGrid[x][y] = val;
+                }*/
+                elevationGrid[x][y] = col;
+            }
+            if(col < 1.0) {
+                col += 0.03125;
+            } else {
+                col = 0.03125;
+            }
+        }
+    }
+
+    public double getElevation(int x, int y){
+            return elevationGrid[x][y];
     }
 
     public void saveWorld() {
@@ -30,7 +47,4 @@ public class World {
         System.out.println("Opened world");
     }
 
-    public void addPerlinNoise(double[][] grid) {
-
-    }
 }
