@@ -17,11 +17,15 @@ public class Map extends JLabel {
 
     private World world;
     private BufferedImage image;
+    private int width;
+    private int height;
 
+    public Map(int width, int height) {
+        this.width = width;
+        this.height = height;
 
-    public Map() {
-        image = new BufferedImage(1600, 1200, BufferedImage.TYPE_INT_ARGB);
-        world = new World(this, getWidth(), getHeight());
+        image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
+        world = new World(this.width, this.height);
 
         updateMap(1);
 
@@ -34,12 +38,12 @@ public class Map extends JLabel {
         ArrayList<String> palette = createPalette(type);
 
         if (type == 1) { // elevation
-            for (int x = 0; x < image.getWidth(); x++) {
-                for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
                     double elevation = world.getElevation(x, y);
-                    System.out.println(elevation);
+                    //System.out.println(elevation);
                     String color = palette.get((int)(elevation * 32.0 - 1.0)); // TODO change based on final double range, for now 0.0 to 1.0
-                    System.out.println(color);
+                    //System.out.println(color);
                     image.setRGB(x, y, convertHexToRGBA(color));
                 }
             }
@@ -91,6 +95,8 @@ public class Map extends JLabel {
         return (255<<24) + (r<<16) + (g<<8) + b;
     }
 
-    public int getWidth() { return image.getWidth(); }
-    public int getHeight() { return image.getHeight(); }
+    public int getWidth() { return width; }
+    public void setWidth(int width) { this.width = width; }
+    public int getHeight() { return height; }
+    public void setHeight(int height) { this.height = height; }
 }

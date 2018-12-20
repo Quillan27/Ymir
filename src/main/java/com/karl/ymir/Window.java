@@ -13,33 +13,38 @@ public class Window extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private Container c;
-    private Sidebar s;
-    private Map m;
+    private Handler handler;
+    private Container container;
+    private Sidebar sidebar;
+    private Map map;
+
+    private Dimension screenSize;
+    private int width;
+    private int height;
 
     public Window() {
 
-        // window settings
         setTitle("Ymir");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        
-        // create sidebar and default world
-        m = new Map();
-        s = new Sidebar(m);
 
-        updateSize();
+        // get screen resolution to scale window/map size
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        System.out.println("Screen Resolution: " + screenSize.getWidth() + " " + screenSize.getHeight());
+        width = (int)screenSize.getWidth() / 2;
+        height = (int)(screenSize.getHeight() / 1.5);
+        setSize(width + (width / 4), height); // set window to map size plus extra for the sidebar
 
-        // add sidebar aligned to the left and world to the right.
-        c = getContentPane();
-        c.add(s, BorderLayout.EAST);
-        c.add(m, BorderLayout.WEST);
+        sidebar = new Sidebar(width, height);
+        map = new Map(width, height);
+        handler = new Handler(map, sidebar);
+
+        // add sidebar aligned to the left and map to the right
+        container = getContentPane();
+        container.add(sidebar, BorderLayout.EAST);
+        container.add(map, BorderLayout.WEST);
 
         setVisible(true);
-    }
-
-    public void updateSize() {
-        setSize(m.getWidth() + 200, m.getHeight());
     }
 }

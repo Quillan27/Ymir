@@ -5,33 +5,20 @@ package com.karl.ymir;
 
 public class World {
 
-    private Map m;
-
+    private Odin odin;
     private double[][] elevationGrid;
 
-    public World(Map m, int width, int height) {
-        this.m = m;
+    public World(int width, int height) {
+        elevationGrid = new double[width][height];
 
-        elevationGrid = new double[this.m.getWidth()][this.m.getHeight()];
-
-        double col = 0.03125;
-        for(int x = 0; x < width; x++) {
+        for(int x = 0; x < width; x++) { // start flat in the middle
             for(int y = 0; y < height; y++){
-/*                if(val < 1.0) {
-                    elevationGrid[x][y] = val;
-                    val += 0.001;
-                } else {
-                    val = -1.0;
-                    elevationGrid[x][y] = val;
-                }*/
-                elevationGrid[x][y] = col;
-            }
-            if(col < 1.0) {
-                col += 0.03125;
-            } else {
-                col = 0.03125;
+                elevationGrid[x][y] = 0.5;
             }
         }
+
+        odin = new Odin();
+
     }
 
     public double getElevation(int x, int y){

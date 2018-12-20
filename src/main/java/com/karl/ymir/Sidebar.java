@@ -12,8 +12,6 @@ public class Sidebar extends JPanel {
 
     public JLabel worldName;
 
-    private Handler h;
-
     // buttons
     private JButton elevationButton;
     private JButton politicalButton;
@@ -32,19 +30,24 @@ public class Sidebar extends JPanel {
     private Image saveIcon;
     private Image settingsIcon;
 
-    public Sidebar(Map map) {
+    private Dimension screenSize;
 
-        h = new Handler(this);
+    public Sidebar(int width, int height) {
 
-        // panel fill the world's height and the last 200 pixels on the width.
-        System.out.println(map.getHeight());
-        setPreferredSize(new Dimension(200, map.getHeight()));
+        setPreferredSize(new Dimension(width / 4, height));
 
-        // CONFIGURE GUI
+        double scale = width / 960.0;
+        System.out.println("Scaling UI by " + scale);
+
+        int titleSize = (int)(24.0 * scale + 0.5);
+        int fontSize = (int)(16.0 * scale + 0.5);
+        int iconSize = (int)(32.0 * scale + 0.5);
+        int buttonWidth = (int)(150 * scale + 0.5);
+        int buttonHeight = (int)(55 * scale + 0.5);
 
         // set world name
         worldName = new JLabel("No Map Loaded");
-        worldName.setFont(new Font("Roboto", Font.BOLD, 16));
+        worldName.setFont(new Font("Roboto", Font.BOLD, titleSize));
 
         elevationButton = new JButton("Elevation");
         politicalButton = new JButton("Poltical");
@@ -61,11 +64,20 @@ public class Sidebar extends JPanel {
             climateIcon = ImageIO.read(new FileInputStream("res/icons/climate.png"));
             biomeIcon = ImageIO.read(new FileInputStream("res/icons/biome.png"));
             newMapIcon = ImageIO.read(new FileInputStream("res/icons/newMap.png"));
-            settingsIcon = ImageIO.read(new FileInputStream("res/icons/settings.png"));
             saveIcon = ImageIO.read(new FileInputStream("res/icons/save.png"));
+            settingsIcon = ImageIO.read(new FileInputStream("res/icons/settings.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // scale icons based on resolution
+        elevationIcon = elevationIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        politicalIcon = politicalIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        climateIcon = climateIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        biomeIcon = biomeIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        newMapIcon = newMapIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        saveIcon = saveIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
+        settingsIcon = settingsIcon.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH);
 
         // set icons
         elevationButton.setIcon(new ImageIcon(elevationIcon));
@@ -81,29 +93,27 @@ public class Sidebar extends JPanel {
         politicalButton.setToolTipText("Switch to Political View");
         climateButton.setToolTipText("Switch to Climate View");
         biomeButton.setToolTipText("Switch to Biome View");
-        newMapButton.setToolTipText("Generate New Map");
+        newMapButton.setToolTipText("Generate New World");
         saveButton.setToolTipText("Save World");
-        settingsButton.setToolTipText("Change Settings");
+        settingsButton.setToolTipText("Change Generation Settings");
 
         // consistent fonts, roboto masterrace
-        elevationButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        politicalButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        climateButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        biomeButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        newMapButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        saveButton.setFont(new Font("Roboto", Font.PLAIN, 12));
-        settingsButton.setFont(new Font("Roboto", Font.PLAIN, 12));
+        elevationButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        politicalButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        climateButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        biomeButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        newMapButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        saveButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
+        settingsButton.setFont(new Font("Roboto", Font.PLAIN, fontSize));
 
-        // add listeners
-        elevationButton.addActionListener(h);
-        politicalButton.addActionListener(h);
-        climateButton.addActionListener(h);
-        biomeButton.addActionListener(h);
-        newMapButton.addActionListener(h);
-        saveButton.addActionListener(h);
-        settingsButton.addActionListener(h);
-
-        /* LAYOUT */
+        // scale buttons
+        elevationButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        politicalButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        climateButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        biomeButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        newMapButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        saveButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        settingsButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
 
         // set layout type
         setLayout(new GridBagLayout());

@@ -5,17 +5,36 @@ import java.awt.event.ActionListener;
 
 public class Handler implements ActionListener {
 
-    private Sidebar s;
-    public Handler(Sidebar s) {
-        this.s = s;
+    private Map map;
+    private Sidebar sidebar;
+
+    public Handler(Map map, Sidebar sidebar) {
+        this.map = map;
+        this.sidebar = sidebar;
+
+        this.sidebar.getElevationButton().addActionListener(this);
+        this.sidebar.getPoliticalButton().addActionListener(this);
+        this.sidebar.getClimateButton().addActionListener(this);
+        this.sidebar.getBiomeButton().addActionListener(this);
+        this.sidebar.getNewMapButton().addActionListener(this);
+        this.sidebar.getSaveButton().addActionListener(this);
+        this.sidebar.getSettingsButton().addActionListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        System.out.println("actions are performed");
-        if(e.getSource() == s.getElevationButton()){
-
+        if(e.getSource() == sidebar.getElevationButton()) {
+            map.updateMap(1);
+            System.out.println("Map switched to elevation");
+        } else if(e.getSource() == sidebar.getPoliticalButton()) {
+            map.updateMap(2);
+            System.out.println("Map switched to political");
+        } else if(e.getSource() == sidebar.getClimateButton()) {
+            map.updateMap(3);
+            System.out.println("Map switched to climate");
+        } else if(e.getSource() == sidebar.getBiomeButton()) {
+            map.updateMap(4);
+            System.out.println("Map switched to biome");
         }
     }
 }
