@@ -1,13 +1,9 @@
 // created by Karl Ramberg - Mar. 21 2018
 package com.karl.ymir;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 
 public class Window extends JFrame {
 

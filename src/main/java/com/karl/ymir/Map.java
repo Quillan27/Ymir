@@ -7,11 +7,9 @@ package com.karl.ymir;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.FileHandler;
 
 public class Map extends JLabel {
 
@@ -42,12 +40,21 @@ public class Map extends JLabel {
                 for (int y = 0; y < height; y++) {
                     double elevation = world.getElevation(x, y);
                     //System.out.println(elevation);
-                    String color = palette.get((int)(elevation * 32.0 - 1.0)); // TODO change based on final double range, for now 0.0 to 1.0
+                    //System.out.println((int)elevation * 31.0);
+                    String color = palette.get((int)(elevation * 31.0)); // TODO change based on final double range, for now 0.0 to 1.0
                     //System.out.println(color);
                     image.setRGB(x, y, convertHexToRGBA(color));
+                    //(int)(elevation * 32.0)
                 }
             }
         }
+    }
+
+    public void newWorld(){
+        System.out.println("Generating New World...");
+        world = new World(width, height);
+        updateMap(1);
+        setIcon(new ImageIcon(image));
     }
 
     // creates color array(palette) from a text file
@@ -79,7 +86,7 @@ public class Map extends JLabel {
         String line = br.readLine();
         while(line != null) {
             lines.add(line);
-            System.out.println(line);
+            //System.out.println(line);
             line = br.readLine();
         }
 

@@ -46,7 +46,7 @@ public class Sidebar extends JPanel {
         int buttonHeight = (int)(55 * scale + 0.5);
 
         // set world name
-        worldName = new JLabel("No Map Loaded");
+        worldName = new JLabel("World");
         worldName.setFont(new Font("Roboto", Font.BOLD, titleSize));
 
         elevationButton = new JButton("Elevation");

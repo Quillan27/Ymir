@@ -35,6 +35,8 @@ public class Handler implements ActionListener {
         } else if(e.getSource() == sidebar.getBiomeButton()) {
             map.updateMap(4);
             System.out.println("Map switched to biome");
+        } else if(e.getSource() == sidebar.getNewMapButton()) {
+            map.newWorld();
         }
     }
 }
