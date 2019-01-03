@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5829eb7e-61b8-4f4a-a827-8e438030468d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/com/karl/ymir/Map.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/com/karl/ymir/Map.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/com/karl/ymir/Window.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/com/karl/ymir/Window.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/com/karl/ymir/World.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/com/karl/ymir/World.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/text/elevation.pal" beforeDir="false" afterPath="$PROJECT_DIR$/res/text/elevation.pal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Handler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Handler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Odin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Odin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Sidebar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Sidebar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Window.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/Window.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/karl/ymir/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/karl/ymir/World.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -38,8 +30,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Map.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="43" column="54" lean-forward="true" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
+            <state relative-caret-position="1044">
+              <caret line="43" column="54" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -50,7 +42,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Handler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="882">
+            <state relative-caret-position="1073">
               <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -62,7 +54,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Sidebar.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="609">
+            <state relative-caret-position="1276">
               <caret line="48" column="37" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -74,13 +66,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/World.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1972">
-              <caret line="68" column="9" selection-start-line="68" selection-start-column="9" selection-end-line="68" selection-end-column="9" />
-              <folding>
-                <element signature="e#2380#2381#0" expanded="true" />
-                <element signature="e#2426#2427#0" expanded="true" />
-                <element signature="e#2596#2597#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="417">
+              <caret line="61" column="88" selection-start-line="61" selection-start-column="88" selection-end-line="61" selection-end-column="88" />
             </state>
           </provider>
         </entry>
@@ -121,10 +108,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="900" />
-    <option name="y" value="423" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
+    <option name="x" value="776" />
+    <option name="y" value="181" />
+    <option name="width" value="1390" />
+    <option name="height" value="1042" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -132,6 +119,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -184,7 +172,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -210,7 +197,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545533883749" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1545538431172" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -248,9 +235,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="54" width="3200" height="1746" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21919127" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22496791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -259,7 +245,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.20402685" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.20402685" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -301,22 +287,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Noise.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-493">
-          <caret line="34" column="15" lean-forward="true" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#7472#0" expanded="true" />
-            <element signature="e#1084#1085#0" expanded="true" />
-            <element signature="e#1122#1123#0" expanded="true" />
-            <element signature="e#1169#1170#0" expanded="true" />
-            <element signature="e#1211#1212#0" expanded="true" />
-            <element signature="e#4973#4974#0" expanded="true" />
-            <element signature="e#5010#5011#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Noise.java" />
     <entry file="file://$PROJECT_DIR$/res/text/elevation.pal">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="899">
@@ -334,20 +305,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Handler.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Map.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="882">
-          <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
+        <state relative-caret-position="1044">
+          <caret line="43" column="54" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Map.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Handler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="43" column="54" lean-forward="true" selection-start-line="43" selection-start-column="54" selection-end-line="43" selection-end-column="54" />
+        <state relative-caret-position="1073">
+          <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -356,7 +327,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/Sidebar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="609">
+        <state relative-caret-position="1276">
           <caret line="48" column="37" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -366,13 +337,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/karl/ymir/World.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1972">
-          <caret line="68" column="9" selection-start-line="68" selection-start-column="9" selection-end-line="68" selection-end-column="9" />
-          <folding>
-            <element signature="e#2380#2381#0" expanded="true" />
-            <element signature="e#2426#2427#0" expanded="true" />
-            <element signature="e#2596#2597#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="417">
+          <caret line="61" column="88" selection-start-line="61" selection-start-column="88" selection-end-line="61" selection-end-column="88" />
         </state>
       </provider>
     </entry>
