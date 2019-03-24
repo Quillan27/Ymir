@@ -36,4 +36,5 @@ func main() {
 	}
 	fmt.Printf("\n")
     }
+    w.saveMap()
 }

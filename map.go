@@ -4,23 +4,31 @@ import (
     "fmt"
     "image"
     "image/color"
+    "image/png"
     "bufio"
     "os"
+    "strconv"
 )
 
 func (w *World) updateMap(view int) {
     p := createPalette(view)
-    w.Image = *image.NewPaletted(image.Rect(0, 0, len(w.Grid[view]), len(w.Grid[view][0])), p)
-    for x := 0; x < w.Image.Bounds().Max.X; x++ {
-	for y := 0; y < w.Image.Bounds().Max.Y; y++ {
-	    c = p[w.Grid[view][x][y]]
-	    w.Image.Set(x, y, c) 
+    w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Grid[view]), len(w.Grid[view][0])))
+    for x := 0; x < w.Map.Bounds().Max.X; x++ {
+	for y := 0; y < w.Map.Bounds().Max.Y; y++ {
+	    c := p[int(w.Grid[view][x][y] * 31.0)]
+	    fmt.Print(c)
+	    w.Map.Set(x, y, c) 
 	}
     }
 }
 
 func (w *World) saveMap() {
-
+    f, err := os.Create("map.png")
+    if err != nil {
+	panic(err)
+    }
+    defer f.Close()
+    png.Encode(f, &w.Map)
 }
 
 func createPalette(view int) (p color.Palette) {
@@ -40,8 +48,20 @@ func createPalette(view int) (p color.Palette) {
 	fmt.Print(path + "could not be opened.\n")
     }
     
-    fmt.Print(hexColors)
-    return *new(color.Palette)
+    p = color.Palette{} 
+    for i := 0; i < len(hexColors); i++ {
+	r, _ := strconv.ParseUint(hexColors[i][1:3], 16, 8)
+	g, _ := strconv.ParseUint(hexColors[i][3:5], 16, 8)
+	b, _ := strconv.ParseUint(hexColors[i][5:7], 16, 8)
+	var a uint8 = 255
+	fmt.Print(hexColors[i][1:3] + "\n")
+	fmt.Print(hexColors[i][3:5] + "\n")
+	fmt.Print(hexColors[i][5:7] + "\n")
+	fmt.Println(r, g, b, a)
+	c := color.RGBA{uint8(r), uint8(g), uint8(b), a}
+	p = append(p, c)
+    }
+    return
 } 
 
 func readLines(path string) ([]string, error) {

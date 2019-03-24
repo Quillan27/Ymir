@@ -7,7 +7,7 @@ import (
 
 type World struct {
     Grid [][][]float64
-    Image image.Paletted
+    Map image.RGBA
     Name string
 }
 
