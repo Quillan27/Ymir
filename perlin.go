@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -19,23 +18,14 @@ func (w *World) addPerlinNoise(minX, minY, maxX, maxY int) {
 			for d := range grads[x][y] {
 				grads[x][y][d] = -1.0 + rand.Float64()*(1.0 - -1.0)
 			}
-			fmt.Print("(")
-			fmt.Printf("%.2f", grads[x][y][0])
-			fmt.Printf(", ")
-			fmt.Printf("%.2f", grads[x][y][1])
-			fmt.Printf(") ")
 		}
-		fmt.Print("\n")
 	}
 
 	for x := 0; x < int(xRange); x++ {
 		for y := 0; y < int(yRange); y++ {
 			w.Grid[minX+x][minY+y][ELEVATION] = perlin(float64(x)/(xRange/(xRange*0.01)),
 				float64(y)/(yRange/(yRange*0.01)), &grads)
-			fmt.Printf("%.2f", w.Grid[minX+x][minY+y][ELEVATION])
-			fmt.Print(" ")
 		}
-		fmt.Printf("\n")
 	}
 }
 
