@@ -4,7 +4,7 @@
 >    [Wikipedia](https://en.wikipedia.org/wiki/Ymir)
 
 ### Development Overview
-- Web Server with HTML, CSS front-end and Go backend
+- Web Server with HTML & CSS front-end and Go backend
     - kept simple - server will only receive a map image and text
-- Biome, Elevation, Political, and Climate Map modes
-- Downloadable maps
+- Biome, elevation, political, and climate map modes
+- Maps can be downloaded to disk

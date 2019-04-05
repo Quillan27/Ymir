@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+//map modes
 const ELEVATION int = 0
 const CLIMATE int = 1
 const POLITICAL int = 2

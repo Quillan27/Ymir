@@ -11,29 +11,28 @@ import (
 )
 
 func (w *World) drawMap(view int) {
-	p := createPalette(view)
-	w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Grid), len(w.Grid[0])))
-	for y := 0; y < w.Map.Bounds().Max.X; y++ {
-		for x := 0; x < w.Map.Bounds().Max.Y; x++ {
-			c := p[int((w.Grid[x][y][view] - -0.707)*(32.0-0.0)/(0.707 - -0.707)+0.0)]
-			w.Map.Set(x, y, c)
+	w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Elevation), len(w.Elevation[0])))
+
+	p := color.Palette{}
+	switch view {
+	case ELEVATION:
+		p = createPalette("res/colors/bandw.txt")
+		for x := 0; x < w.Map.Bounds().Max.X; x++ {
+			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
+				i := int((w.Elevation[x][y] - -0.707)*(32.0-0.0)/(0.707 - -0.707) + 0.0)
+				w.Map.Set(x, y, p[i])
+			}
 		}
+	case CLIMATE:
+		p = createPalette("res/colors/climate.txt")
+	case POLITICAL:
+		p = createPalette("res/colors/poltical.txt")
+	case BIOME:
+		p = createPalette("res/colors/biome.txt")
 	}
 }
 
-func createPalette(view int) (p color.Palette) {
-	var path string
-	switch view {
-	case ELEVATION:
-		path = "res/palettes/bandw.pal"
-	case CLIMATE:
-		path = "res/palettes/climate.pal"
-	case POLITICAL:
-		path = "res/palettes/political.pal"
-	case BIOME:
-		path = "res/palettes/biome.pal"
-	}
-
+func createPalette(path string) (p color.Palette) {
 	hexColors, err := splitLines(path)
 	if err != nil {
 		fmt.Print(path + "could not be opened.\n")

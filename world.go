@@ -5,19 +5,16 @@ import (
 )
 
 type World struct {
-	Grid [][][]float64
-	Map  image.RGBA
-	Name string
+	Elevation [][]float64
+	Map       image.RGBA
+	Name      string
 }
 
 func newWorld(width, height int) (w *World) {
 	w = new(World)
-	w.Grid = make([][][]float64, width)
-	for x := range w.Grid {
-		w.Grid[x] = make([][]float64, height)
-		for y := range w.Grid[x] {
-			w.Grid[x][y] = make([]float64, 4)
-		}
+	w.Elevation = make([][]float64, width)
+	for x := range w.Elevation {
+		w.Elevation[x] = make([]float64, height)
 	}
 	w.generate()
 	w.drawMap(ELEVATION)
@@ -27,7 +24,7 @@ func newWorld(width, height int) (w *World) {
 }
 
 func (w *World) generate() {
-	w.addPerlinNoise(0, 0, len(w.Grid), len(w.Grid[0]))
+	w.addPerlinNoise(0, len(w.Elevation), 0, len(w.Elevation[0]))
 }
 
 func (w *World) name() {
