@@ -2,8 +2,6 @@ package main
 
 import (
 	"image"
-	"math/rand"
-	"time"
 )
 
 type World struct {
@@ -13,11 +11,12 @@ type World struct {
 }
 
 func newWorld(width, height int) (w *World) {
+	w = new(World)
 	w.Grid = make([][][]float64, width)
-	for i := range w.Grid {
-		w.Grid[i] = make([][]float64, height)
-		for j := range w.Grid[i] {
-			w.Grid[i][j] = make([]float64, 4)
+	for x := range w.Grid {
+		w.Grid[x] = make([][]float64, height)
+		for y := range w.Grid[x] {
+			w.Grid[x][y] = make([]float64, 4)
 		}
 	}
 	w.generate()
@@ -28,14 +27,7 @@ func newWorld(width, height int) (w *World) {
 }
 
 func (w *World) generate() {
-	rand.Seed(time.Now().UnixNano())
-	for i := range w.Grid {
-		for j := range w.Grid[i] {
-			for k := range w.Grid[i][j] {
-				w.Grid[i][j][k] += rand.Float64()
-			}
-		}
-	}
+	w.addPerlinNoise(0, 0, len(w.Grid), len(w.Grid[0]))
 }
 
 func (w *World) name() {

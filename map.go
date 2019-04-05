@@ -12,13 +12,15 @@ import (
 
 func (w *World) drawMap(view int) {
 	p := createPalette(view)
-
-	w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Grid[view]), len(w.Grid[view][0])))
+	fmt.Print("pal len: ", len(p), "\n")
+	w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Grid), len(w.Grid[0])))
 	for y := 0; y < w.Map.Bounds().Max.X; y++ {
 		for x := 0; x < w.Map.Bounds().Max.Y; x++ {
-			c := p[int(w.Grid[x][y][view]*32.0)]
+			fmt.Print(int((w.Grid[x][y][view]+1.0)*31.0/2), " ")
+			c := p[int((w.Grid[x][y][view] - -0.707)*(32.0-0.0)/(0.707 - -0.707)+0.0)]
 			w.Map.Set(x, y, c)
 		}
+		fmt.Print("\n")
 	}
 }
 
@@ -26,7 +28,7 @@ func createPalette(view int) (p color.Palette) {
 	var path string
 	switch view {
 	case ELEVATION:
-		path = "res/palettes/elevation.pal"
+		path = "res/palettes/bandw.pal"
 	case CLIMATE:
 		path = "res/palettes/climate.pal"
 	case POLITICAL:
@@ -76,4 +78,5 @@ func (w *World) exportMap() {
 	defer f.Close()
 
 	png.Encode(f, &w.Map)
+	fmt.Print("Map saved\n")
 }

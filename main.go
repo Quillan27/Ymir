@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 )
 
 const ELEVATION int = 0
@@ -13,6 +15,9 @@ func main() {
 	fmt.Printf("Welcome to Ymir!\n")
 	fmt.Printf("----------------\n\n")
 
-	w := newWorld(27, 27)
+	args := os.Args[1:]
+	width, _ := strconv.Atoi(args[0])
+	height, _ := strconv.Atoi(args[1])
+	w := newWorld(width, height)
 	w.exportMap()
 }
