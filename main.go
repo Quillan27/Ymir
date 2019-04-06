@@ -5,12 +5,6 @@ import (
 	"strconv"
 )
 
-//map modes
-const ELEVATION int = 0
-const CLIMATE int = 1
-const POLITICAL int = 2
-const BIOME int = 3
-
 func main() {
 	args := os.Args[1:]
 	width, _ := strconv.Atoi(args[0])

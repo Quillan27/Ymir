@@ -10,41 +10,50 @@ import (
 	"strconv"
 )
 
-func (w *World) drawMap(view int) {
-	w.Map = *image.NewRGBA(image.Rect(0, 0, len(w.Elevation), len(w.Elevation[0])))
+type MapView int
 
-	p := color.Palette{}
-	switch view {
+const (
+	ELEVATION MapView = iota
+	CLIMATE   MapView = iota
+	POLITICAL MapView = iota
+	BIOME     MapView = iota
+)
+
+func (world *World) drawMap(mapView MapView) {
+	world.Map = *image.NewRGBA(image.Rect(0, 0, len(world.Elevation), len(world.Elevation[0])))
+
+	palette := color.Palette{}
+	switch mapView {
 	case ELEVATION:
-		p = createPalette("res/colors/bandw.txt")
-		for x := 0; x < w.Map.Bounds().Max.X; x++ {
-			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
-				i := int((w.Elevation[x][y] - -0.707)*(32.0-0.0)/(0.707 - -0.707) + 0.0)
-				w.Map.Set(x, y, p[i])
+		palette = createPalette("assets/colors/elevation.txt")
+		for x := 0; x < world.Map.Bounds().Max.X; x++ {
+			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
+				i := int((world.Elevation[x][y] - -0.707)*(32.0-0.0)/(0.707 - -0.707) + 0.0)
+				world.Map.Set(x, y, palette[i])
 			}
 		}
 	case CLIMATE:
-		p = createPalette("res/colors/climate.txt")
+		palette = createPalette("assets/colors/climate.txt")
 	case POLITICAL:
-		p = createPalette("res/colors/poltical.txt")
+		palette = createPalette("assets/colors/poltical.txt")
 	case BIOME:
-		p = createPalette("res/colors/biome.txt")
+		palette = createPalette("assets/colors/biome.txt")
 	}
 }
 
-func createPalette(path string) (p color.Palette) {
+func createPalette(path string) (palette color.Palette) {
 	hexColors, err := splitLines(path)
 	if err != nil {
 		fmt.Print(path + "could not be opened.\n")
 	}
 
 	for i := 0; i < len(hexColors); i++ {
-		r, _ := strconv.ParseUint(hexColors[i][1:3], 16, 8)
-		g, _ := strconv.ParseUint(hexColors[i][3:5], 16, 8)
-		b, _ := strconv.ParseUint(hexColors[i][5:7], 16, 8)
-		var a uint8 = 255
-		c := color.RGBA{uint8(r), uint8(g), uint8(b), a}
-		p = append(p, c)
+		red, _ := strconv.ParseUint(hexColors[i][1:3], 16, 8)
+		green, _ := strconv.ParseUint(hexColors[i][3:5], 16, 8)
+		blue, _ := strconv.ParseUint(hexColors[i][5:7], 16, 8)
+		alpha := 255
+		color := color.RGBA{uint8(red), uint8(green), uint8(blue), uint8(alpha)}
+		palette = append(palette, color)
 	}
 
 	return
@@ -66,12 +75,12 @@ func splitLines(path string) (lines []string, scanErr error) {
 	return
 }
 
-func (w *World) exportMap() {
-	f, err := os.Create("map.png")
+func (world *World) exportMap() {
+	file, err := os.Create("map.png")
 	if err != nil {
 		panic(err)
 	}
-	defer f.Close()
+	defer file.Close()
 
-	png.Encode(f, &w.Map)
+	png.Encode(file, &world.Map)
 }

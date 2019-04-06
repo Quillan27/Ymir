@@ -8,25 +8,31 @@ type World struct {
 	Elevation [][]float64
 	Map       image.RGBA
 	Name      string
+	Width     int
+	Height    int
 }
 
-func newWorld(width, height int) (w *World) {
-	w = new(World)
-	w.Elevation = make([][]float64, width)
-	for x := range w.Elevation {
-		w.Elevation[x] = make([]float64, height)
+func newWorld(width, height int) (world *World) {
+	world = new(World)
+
+	world.Width = width
+	world.Height = height
+
+	world.Elevation = make([][]float64, world.Width)
+	for x := range world.Elevation {
+		world.Elevation[x] = make([]float64, world.Height)
 	}
-	w.generate()
-	w.drawMap(ELEVATION)
-	w.name()
+	world.generate()
+	world.drawMap(ELEVATION)
+	world.name()
 
 	return
 }
 
-func (w *World) generate() {
-	w.addPerlinNoise(0, len(w.Elevation), 0, len(w.Elevation[0]))
+func (world *World) generate() {
+	world.addPerlinNoise(0, len(world.Elevation), 0, len(world.Elevation[0]))
 }
 
-func (w *World) name() {
-	w.Name = "New World"
+func (world *World) name() {
+	world.Name = "New World"
 }
