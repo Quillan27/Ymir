@@ -2,12 +2,10 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
 	"os"
-	"strconv"
 )
 
 type MapView int
@@ -25,7 +23,7 @@ func (world *World) drawMap(mapView MapView) {
 	palette := color.Palette{}
 	switch mapView {
 	case ELEVATION:
-		palette = createPalette("assets/colors/elevation.txt")
+		palette = createPalette("assets/colors/elevation.png")
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
 				i := int((world.Elevation[x][y] - -0.707)*(32.0-0.0)/(0.707 - -0.707) + 0.0)
@@ -42,18 +40,12 @@ func (world *World) drawMap(mapView MapView) {
 }
 
 func createPalette(path string) (palette color.Palette) {
-	hexColors, err := splitLines(path)
-	if err != nil {
-		fmt.Print(path + "could not be opened.\n")
-	}
+	file, _ := os.Open(path)
+	defer file.Close()
 
-	for i := 0; i < len(hexColors); i++ {
-		red, _ := strconv.ParseUint(hexColors[i][1:3], 16, 8)
-		green, _ := strconv.ParseUint(hexColors[i][3:5], 16, 8)
-		blue, _ := strconv.ParseUint(hexColors[i][5:7], 16, 8)
-		alpha := 255
-		color := color.RGBA{uint8(red), uint8(green), uint8(blue), uint8(alpha)}
-		palette = append(palette, color)
+	image, _, _ := image.Decode(file)
+	for i := 0; i < 31; i++ {
+		palette = append(palette, image.At(i, 0))
 	}
 
 	return

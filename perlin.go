@@ -27,8 +27,8 @@ func (w *World) addPerlinNoise(minX, maxX, minY, maxY int) {
 
 	for x := 0; x < xRange; x++ {
 		for y := 0; y < yRange; y++ {
-			w.Elevation[minX+x][minY+y] =
-				perlin(float64(x)/float64(xRange/5), float64(y)/float64(yRange/5))
+			w.Elevation[minX+x][minY+y] +=
+				perlin(float64(x)/float64(xRange), float64(y)/float64(yRange))
 		}
 	}
 }
@@ -56,7 +56,6 @@ func perlin(x, y float64) float64 {
 }
 
 func dotGridGradient(ix, iy int, x, y float64) float64 {
-
 	dx := x - float64(ix)
 	dy := y - float64(iy)
 
