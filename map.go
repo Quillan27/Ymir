@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"image"
 	"image/color"
 	"image/png"
@@ -26,7 +25,7 @@ func (world *World) drawMap(mapView MapView) {
 		palette = createPalette("assets/colors/elevation.png")
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
-				i := int((world.Elevation[x][y] - -0.707)*(32.0-0.0)/(0.707 - -0.707) + 0.0)
+				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
@@ -51,20 +50,8 @@ func createPalette(path string) (palette color.Palette) {
 	return
 }
 
-func splitLines(path string) (lines []string, scanErr error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	scanErr = scanner.Err()
-
-	return
+func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
+	return (value-oldMin)*(newMax-newMin)/(oldMax-oldMin) + newMin
 }
 
 func (world *World) exportMap() {

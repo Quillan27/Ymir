@@ -28,7 +28,7 @@ func (w *World) addPerlinNoise(minX, maxX, minY, maxY int) {
 	for x := 0; x < xRange; x++ {
 		for y := 0; y < yRange; y++ {
 			w.Elevation[minX+x][minY+y] +=
-				perlin(float64(x)/float64(xRange), float64(y)/float64(yRange))
+				perlin(float64(x)/float64(xRange/3), float64(y)/float64(yRange/3))
 		}
 	}
 }
