@@ -11,9 +11,9 @@ type MapView int
 
 const (
 	ELEVATION MapView = iota
-	CLIMATE   MapView = iota
-	POLITICAL MapView = iota
-	BIOME     MapView = iota
+	CLIMATE
+	POLITICAL
+	BIOME
 )
 
 func (world *World) drawMap(mapView MapView) {

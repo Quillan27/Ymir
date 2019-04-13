@@ -11,8 +11,8 @@
 
 ### Planned Features
 - Web Server with HTML & CSS front-end and Go backend
-    - kept simple - server will only receive a map
 - Biome, elevation, political, and climate map views 
 - Maps can be exported to disk
 - Seperate generation code into own library
+- A setting menu for world types and generation methods
 

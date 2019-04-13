@@ -30,8 +30,8 @@ func newWorld(width, height int) (world *World) {
 }
 
 func (world *World) generate() {
-	world.addPerlinNoise(0, len(world.Elevation), 0, len(world.Elevation[0]))
-	world.addPerlinNoise(0, len(world.Elevation), 0, len(world.Elevation[0]))
+	world.addPerlinNoise(0, world.Width, 0, world.Height)
+	world.addRandomNoise(0, world.Width, 0, world.Height)
 }
 
 func (world *World) name() {

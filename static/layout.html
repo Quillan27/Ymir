@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>{{.Title}}</title>
+	</head>
+	<body>
+		<h1>{{.Name}}</h1>
+		<div id="map"></div>
+		<button onclick="newWorld()">New World</button>
+		<select>
+			<option value="elevation">Elevation</option>
+			<option value="climate">Climate</option>
+			<option value="political">Political</option>
+			<option value="biome">Biome</option>
+		</select>
+	<script>
+		function newWorld() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/map");
+			xhttp.send();
+			console.log("request sent");
+		}
+	</script>
+	</body>
+</html>
