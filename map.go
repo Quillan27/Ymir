@@ -10,18 +10,19 @@ import (
 type MapView int
 
 const (
-	ELEVATION MapView = iota
-	CLIMATE
-	POLITICAL
-	BIOME
+	ElevationView MapView = iota
+	ClimateView
+	PoliticalView
+	BiomeView
 )
 
+// creates a map image based on the world and provided mapview
 func (world *World) drawMap(mapView MapView) {
-	world.Map = *image.NewRGBA(image.Rect(0, 0, len(world.Elevation), len(world.Elevation[0])))
+	world.Map = *image.NewRGBA(image.Rect(0, 0, world.Width, world.Height))
 
-	palette := color.Palette{}
+	palette := color.Palette
 	switch mapView {
-	case ELEVATION:
+	case ElevationView:
 		palette = createPalette("assets/colors/elevation.png")
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
@@ -29,15 +30,16 @@ func (world *World) drawMap(mapView MapView) {
 				world.Map.Set(x, y, palette[i])
 			}
 		}
-	case CLIMATE:
+	case ClimateView:
 		palette = createPalette("assets/colors/climate.txt")
-	case POLITICAL:
+	case PoliticalView:
 		palette = createPalette("assets/colors/poltical.txt")
-	case BIOME:
+	case BiomeView:
 		palette = createPalette("assets/colors/biome.txt")
 	}
 }
 
+// returns an array of colors from a .png image
 func createPalette(path string) (palette color.Palette) {
 	file, _ := os.Open(path)
 	defer file.Close()
@@ -50,10 +52,12 @@ func createPalette(path string) (palette color.Palette) {
 	return
 }
 
+// transforms a number in one range to another range
 func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
 	return (value-oldMin)*(newMax-newMin)/(oldMax-oldMin) + newMin
 }
 
+// saves the current worlds map to disk
 func (world *World) exportMap() {
 	file, err := os.Create("map.png")
 	if err != nil {

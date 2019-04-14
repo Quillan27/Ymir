@@ -5,29 +5,45 @@ import (
 	"time"
 )
 
+// representation of a 2D vector
 type Vector struct {
 	x, y float64
 }
 
-var grads [][]Vector
+const (
+	MinVectX float64 = -1.0 // minimum vector length in x direction
+	MaxVectX float64 = 1.0  // maximum vector length in x direction
+	MinVectY float64 = -1.0 // minimum vector length in y direction
+	MaxVectY float64 = 1.0  // meximum vector length in y direction
+)
 
-func (w *World) addPerlinNoise(minX, maxX, minY, maxY int) {
+// grid of 2D gradient vectors
+var gradientVectors [][]Vector
+
+// adds perlin noise to a given section of a coordinate grid
+func (world *World) addPerlinNoise(minX, maxX, minY, maxY int) {
 	xRange := maxX - minX
 	yRange := maxY - minY
+	vectXRange := MaxVectX - MinVectX
+	vectYRange := MaxVectY - MinVectY
 
 	rand.Seed(time.Now().UnixNano())
-	grads = make([][]Vector, xRange+1)
-	for i := range grads {
-		grads[i] = make([]Vector, yRange+1)
-		for j := range grads[i] {
-			grads[i][j] = Vector{-1.0 + rand.Float64()*(1.0 - -1.0),
-				-1.0 + rand.Float64()*(1.0 - -1.0)}
+
+	// initialized the gradient vector grid
+	gradientVectors = make([][]Vector, xRange+1)
+	for i := range gradientVectors {
+		gradientVectors[i] = make([]Vector, yRange+1)
+		for j := range gradientVectors[i] {
+			gradientVectors[i][j] = Vector{
+				MinVectX + rand.Float64()*vectXRange,
+				MinVectY + rand.Float64()*vectYRange,
+			}
 		}
 	}
 
 	for x := 0; x < xRange; x++ {
 		for y := 0; y < yRange; y++ {
-			w.Elevation[minX+x][minY+y] +=
+			world.Elevation[minX+x][minY+y] +=
 				perlin(float64(x)/float64(xRange/3), float64(y)/float64(yRange/3))
 		}
 	}
@@ -46,22 +62,24 @@ func perlin(x, y float64) float64 {
 
 	n0 = dotGridGradient(x0, y0, x, y)
 	n1 = dotGridGradient(x1, y0, x, y)
-	ix0 = lerp(n0, n1, sx)
+	ix0 = linearInterpolate(n0, n1, sx)
 
 	n0 = dotGridGradient(x0, y1, x, y)
 	n1 = dotGridGradient(x1, y1, x, y)
-	ix1 = lerp(n0, n1, sx)
+	ix1 = linearInterpolate(n0, n1, sx)
 
-	return lerp(ix0, ix1, sy)
+	return linearInterpolate(ix0, ix1, sy)
 }
 
+// finds the dot product of two vectors
 func dotGridGradient(ix, iy int, x, y float64) float64 {
 	dx := x - float64(ix)
 	dy := y - float64(iy)
 
-	return dx*grads[ix][iy].x + dy*grads[ix][iy].y
+	return dx*gradientVectors[ix][iy].x + dy*gradientVectors[ix][iy].y
 }
 
-func lerp(a0, a1, w float64) float64 {
+// interpolates linearly between two points
+func linearInterpolate(a0, a1, w float64) float64 {
 	return (1.0-w)*a0 + w*a1
 }
