@@ -7,46 +7,89 @@ import (
 	"os"
 )
 
+// the map view determines aspects like color palettes
+// and how the map is generated from the grid
 type MapView int
 
 const (
-	ElevationView MapView = iota
-	ClimateView
-	PoliticalView
-	BiomeView
+	ElevationView        MapView = iota                                     // default view, represents the elevation (white > red > orange > yellow > green > blue)
+	ClimateView                                                             // average temperature, hot > cold (red > blue)
+	PoliticalView                                                           // colored regions representing political states that would form based on the terrain
+	BiomeView                                                               // biome based on climate, elevation, wet/dryness
+	AssetsDir            string  = "assets/"                                // path to the assets directory
+	PaletteDir           string  = "palettes/"                              // path to the palette directory
+	ElevationPalettePath string  = AssetsDir + PaletteDir + "elevation.png" // path to the elevation palette .png
+	ClimatePalettePath   string  = AssetsDir + PaletteDir + "climate.png"   // path to the climatepalette .png
+	PoliticalPalettePath string  = AssetsDir + PaletteDir + "political.png" // path to the political palette .png
+	BiomePalettePath     string  = AssetsDir + PaletteDir + "biome.png"     // path to the biome palette .png
 )
 
 // creates a map image based on the world and provided mapview
 func (world *World) drawMap(mapView MapView) {
+	// create a new, blank map image
 	world.Map = *image.NewRGBA(image.Rect(0, 0, world.Width, world.Height))
 
-	palette := color.Palette
+	// load the palette for the selected map view
+	palette := color.Palette{}
 	switch mapView {
 	case ElevationView:
-		palette = createPalette("assets/colors/elevation.png")
+		palette = createPalette(ElevationPalettePath)
+	case ClimateView:
+		palette = createPalette(ClimatePalettePath)
+	case PoliticalView:
+		palette = createPalette(PoliticalPalettePath)
+	case BiomeView:
+		palette = createPalette(BiomePalettePath)
+	}
+
+	// write the map image
+	switch mapView {
+	case ElevationView:
+		for x := 0; x < world.Map.Bounds().Max.X; x++ {
+			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
+				// map the grid value to a color in the palette
+				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+
+				// write the color to the image
+				world.Map.Set(x, y, palette[i])
+			}
+		}
+	case ClimateView: // (TODO) algorithm for interpreting elevation for climate
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
 				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
-	case ClimateView:
-		palette = createPalette("assets/colors/climate.txt")
-	case PoliticalView:
-		palette = createPalette("assets/colors/poltical.txt")
-	case BiomeView:
-		palette = createPalette("assets/colors/biome.txt")
+	case PoliticalView: // (TODO) algorithm for interpreting political boundaries based on terrain
+		for x := 0; x < world.Map.Bounds().Max.X; x++ {
+			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
+				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				world.Map.Set(x, y, palette[i])
+			}
+		}
+	case BiomeView: // (TODO) alogrithm for interpreting biome based on climate, elevation, proximity to ocean, etc.
+		for x := 0; x < world.Map.Bounds().Max.X; x++ {
+			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
+				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				world.Map.Set(x, y, palette[i])
+			}
+		}
 	}
 }
 
 // returns an array of colors from a .png image
 func createPalette(path string) (palette color.Palette) {
+	// open the file at the path
 	file, _ := os.Open(path)
 	defer file.Close()
 
-	image, _, _ := image.Decode(file)
+	// decode to a go-library image.RGBA
+	imagePalette, _, _ := image.Decode(file)
+
+	// read the images pixel into a color palette
 	for i := 0; i < 31; i++ {
-		palette = append(palette, image.At(i, 0))
+		palette = append(palette, imagePalette.At(i, 0))
 	}
 
 	return
@@ -57,13 +100,15 @@ func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
 	return (value-oldMin)*(newMax-newMin)/(oldMax-oldMin) + newMin
 }
 
-// saves the current worlds map to disk
+// saves the current world's map to disk
 func (world *World) exportMap() {
-	file, err := os.Create("map.png")
+	// open and prepare a new file
+	file, err := os.Create("out/map.png")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 
+	// encode and write a .png from the world map
 	png.Encode(file, &world.Map)
 }

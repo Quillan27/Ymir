@@ -18,7 +18,7 @@ type Page struct {
 }
 
 const (
-	HTML_PATH  string = "static/layout.html" // location HTML template
+	HTML_PATH  string = "static/layout.html" // location of HTML template
 	PAGE_TITLE string = "Ymir"               // webpage title
 )
 
@@ -30,17 +30,18 @@ var (
 // handles loading the base webpage with an HTML template
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 	// initialize the webpage struct
-	//
 	page := Page{
 		Title: PAGE_TITLE,
 		Name:  "World Name",
 	}
 
+	// create a new template from the html layout
 	tmpl, err := template.ParseFiles(HTML_PATH)
 	if err != nil {
 		fmt.Print("jemplate not found\n")
 	}
 
+	// write the template to the webpage
 	tmpl.Execute(w, page)
 }
 
@@ -60,7 +61,7 @@ func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// creating a new routing solution and add handlers
+	// creating a new routing solution and adding handlers
 	router := mux.NewRouter()
 	router.HandleFunc("/", pageHandler)
 	router.HandleFunc("/map", newWorldHandler)

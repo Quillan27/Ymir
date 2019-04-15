@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/karledramberg/ymir/procgen"
 	"image"
 )
 
@@ -23,15 +24,15 @@ func newWorld(width, height int) (world *World) {
 		world.Elevation[x] = make([]float64, world.Height)
 	}
 	world.generate()
-	world.drawMap(ELEVATION)
+	world.drawMap(ElevationView)
 	world.name()
 
 	return
 }
 
 func (world *World) generate() {
-	world.addPerlinNoise(0, world.Width, 0, world.Height)
-	world.addRandomNoise(0, world.Width, 0, world.Height)
+	world.Elevation = procgen.AddPerlinNoise(world.Elevation, 0, world.Width, 0, world.Height)
+	world.Elevation = procgen.AddRandomNoise(world.Elevation, 0, world.Width, 0, world.Height)
 }
 
 func (world *World) name() {
