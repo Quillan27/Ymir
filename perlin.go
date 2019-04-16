@@ -1,4 +1,4 @@
-package procgen
+package main
 
 import (
 	"math/rand"
@@ -21,7 +21,7 @@ const (
 var gradientVectors [][]Vector
 
 // adds perlin noise to a given section of a coordinate grid
-func AddPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
+func addPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	xRange := maxX - minX
 	yRange := maxY - minY
 	vectXRange := MaxVectX - MinVectX
@@ -41,6 +41,7 @@ func AddPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 		}
 	}
 
+	// determine elevation a each point using the perlin() function
 	for x := 0; x < xRange; x++ {
 		for y := 0; y < yRange; y++ {
 			grid[minX+x][minY+y] +=
@@ -51,6 +52,8 @@ func AddPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	return grid
 }
 
+// determines a point's elevation based on
+// surroundings and the gradient vector field
 func perlin(x, y float64) float64 {
 	x0 := int(x)
 	x1 := x0 + 1
@@ -86,11 +89,15 @@ func linearInterpolate(a0, a1, w float64) float64 {
 	return (1.0-w)*a0 + w*a1
 }
 
-func AddRandomNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
+// adds generice random noise to a specified portion of a 2d grid
+func addRandomNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	xRange := maxX - minX
 	yRange := maxY - minY
 
 	rand.Seed(time.Now().UnixNano())
+
+	// add or subtract a random float amount
+	// from each point
 	for x := 0; x < xRange; x++ {
 		for y := 0; y < yRange; y++ {
 			grid[x][y] += rand.Float64() * (0.005 - -0.005)
