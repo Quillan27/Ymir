@@ -26,7 +26,7 @@ const (
 	BiomeView                                                   // biome based on climate, elevation, wet/dryness
 	AssetsDir            string  = "assets/"                    // path to the assets directory
 	PaletteDir           string  = AssetsDir + "palettes/"      // path to the palette directory
-	ElevationPalettePath string  = PaletteDir + "elevation.png" // path to the elevation palette .png
+	ElevationPalettePath string  = PaletteDir + "bw.png"        // path to the elevation palette .png
 	ClimatePalettePath   string  = PaletteDir + "climate.png"   // path to the climatepalette .png
 	PoliticalPalettePath string  = PaletteDir + "political.png" // path to the political palette .png
 	BiomePalettePath     string  = PaletteDir + "biome.png"     // path to the biome palette .png
@@ -50,7 +50,7 @@ func newWorld(width, height int) (world *World) {
 	world.generateTerrain()
 	world.drawMap(ElevationView) // elevation is the default mapview
 	world.name()
-
+	world.exportMap()
 	return
 }
 

@@ -7,7 +7,6 @@ const (
 	StretchConstant = -0.211324865405187 // (1/Math.sqrt(2+1)-1)/2
 	SquishConstant  = 0.366025403784439  // (Math.sqrt(2+1)-1)/2
 	NormConstant    = 47
-	DefaultSeed     = 0
 )
 
 // gradients approximates the direction to
@@ -48,7 +47,7 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 
 	for x := minX; x < maxX; x++ {
 		for y := minY; y < maxY; y++ {
-			grid[x][y] = opensimplex(float64(x), float64(y))
+			grid[x][y] = opensimplex(float64(x)/10, float64(y)/10)
 		}
 	}
 	return grid
@@ -77,7 +76,7 @@ func opensimplex(x, y float64) float64 {
 
 	var value float64
 
-	// 0,1
+	// 1,0
 	dx1 := dx0 - 1 - SquishConstant
 	dy1 := dy0 - 0 - SquishConstant
 	attn1 := 2 - dx1*dx1 - dy1*dy1
@@ -86,13 +85,13 @@ func opensimplex(x, y float64) float64 {
 		value += attn1 * attn1 * extrapolate(xsb+1, ysb+0, dx1, dy1)
 	}
 
-	// 1,0
+	// 0,1
 	dx2 := dx0 - 0 - SquishConstant
 	dy2 := dy0 - 1 - SquishConstant
 	attn2 := 2 - dx2*dx2 - dy2*dy2
 	if attn2 > 0 {
 		attn2 *= attn2
-		value += attn2 * attn2 * extrapolate(xsb+1, ysb+0, dx2, dy2)
+		value += attn2 * attn2 * extrapolate(xsb+0, ysb+1, dx2, dy2)
 	}
 
 	var xsv_ext, ysv_ext int
