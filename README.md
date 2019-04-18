@@ -5,7 +5,7 @@
 
 ### Goals
 - **Learn** common procedural generation techniques
-- **Learn** Go in and out
+- **Learn** the Go language in and out
 - **Learn** how to manage a larger project
 - **Learn** how to finish a project
 
@@ -13,6 +13,6 @@
 - Web Server with HTML & CSS front-end and Go backend
 - Biome, elevation, political, and climate map views 
 - Maps can be exported to disk
-- Seperate generation code into own library
-- A setting menu for world types and generation methods
+- Seperate library for generation code
+- Settings menu for world types and generation methods
 

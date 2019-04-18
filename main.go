@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-// aspects of the base webpage, loaded with an HTML template
+// Page holds the elements on the webpage
 type Page struct {
 	Title string // webpage title
 	Name  string // world name
@@ -27,7 +27,7 @@ var (
 	world World             // the currently loaded world
 )
 
-// handles loading the base webpage with an HTML template
+// pageHandler handles the loading of the webpages structure
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 	// initialize the webpage struct
 	page := Page{
@@ -45,8 +45,8 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, page)
 }
 
-// creates a totally new world and passes it's map back to the webpage
-// linked to the new world button on the webpage
+// newWorldHandler handles requests from the 'New World' button
+// it generates a totally new world and passes back a map
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 	// create a totally new world
 	world = *newWorld(512, 512)

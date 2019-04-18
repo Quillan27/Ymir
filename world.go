@@ -8,28 +8,28 @@ import (
 )
 
 type World struct {
-	Elevation [][]float64 // generated 2d grid for the world's elevation
-	Map       image.RGBA  // generated map from elevation and a mapview
-	Name      string      // generated random name for the world
-	Width     int         // world width
-	Height    int         // world height
+	Terrain [][]float64 // generated 2d grid for the world's elevation
+	Map     image.RGBA  // generated map from elevation and a mapview
+	Name    string      // generated random name for the world
+	Width   int         // world width
+	Height  int         // world height
 }
 
-// the map view determines aspects like color palettes
-// and how the map is generated from the grid
-type MapView int
+// MapView determines aspects like color palettes
+// and how the map is generated from the elevation grid
+type MapView uint8
 
 const (
-	ElevationView        MapView = iota                                     // default view, represents the elevation (white > red > orange > yellow > green > blue)
-	ClimateView                                                             // average temperature, hot > cold (red > blue)
-	PoliticalView                                                           // colored regions representing political states that would form based on the terrain
-	BiomeView                                                               // biome based on climate, elevation, wet/dryness
-	AssetsDir            string  = "assets/"                                // path to the assets directory
-	PaletteDir           string  = "palettes/"                              // path to the palette directory
-	ElevationPalettePath string  = AssetsDir + PaletteDir + "elevation.png" // path to the elevation palette .png
-	ClimatePalettePath   string  = AssetsDir + PaletteDir + "climate.png"   // path to the climatepalette .png
-	PoliticalPalettePath string  = AssetsDir + PaletteDir + "political.png" // path to the political palette .png
-	BiomePalettePath     string  = AssetsDir + PaletteDir + "biome.png"     // path to the biome palette .png
+	ElevationView        MapView = iota                         // default view, represents the terrain elevation
+	ClimateView                                                 // climate map view, represents an average temperature
+	PoliticalView                                               // colored regions representing political states that would form based on the terrain
+	BiomeView                                                   // biome based on climate, elevation, wet/dryness
+	AssetsDir            string  = "assets/"                    // path to the assets directory
+	PaletteDir           string  = AssetsDir + "palettes/"      // path to the palette directory
+	ElevationPalettePath string  = PaletteDir + "elevation.png" // path to the elevation palette .png
+	ClimatePalettePath   string  = PaletteDir + "climate.png"   // path to the climatepalette .png
+	PoliticalPalettePath string  = PaletteDir + "political.png" // path to the political palette .png
+	BiomePalettePath     string  = PaletteDir + "biome.png"     // path to the biome palette .png
 )
 
 // generates a completely new world from scratch
@@ -42,9 +42,9 @@ func newWorld(width, height int) (world *World) {
 	world.Height = height
 
 	// initialize the elevation height map with 0s
-	world.Elevation = make([][]float64, world.Width)
-	for x := range world.Elevation {
-		world.Elevation[x] = make([]float64, world.Height)
+	world.Terrain = make([][]float64, world.Width)
+	for x := range world.Terrain {
+		world.Terrain[x] = make([]float64, world.Height)
 	}
 
 	world.generateTerrain()
@@ -56,8 +56,7 @@ func newWorld(width, height int) (world *World) {
 
 // generates a height map from scratch for a new world
 func (world *World) generateTerrain() {
-	world.Elevation = addPerlinNoise(world.Elevation, 0, world.Width, 0, world.Height)
-	world.Elevation = addRandomNoise(world.Elevation, 0, world.Width, 0, world.Height)
+	world.Terrain = addOpenSimplexNoise(world.Terrain, 0, world.Width, 0, world.Height)
 }
 
 // creates a map image based on the world and provided mapview
@@ -84,7 +83,7 @@ func (world *World) drawMap(mapView MapView) {
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
 				// map the grid value to a color in the palette
-				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 
 				// write the color to the image
 				world.Map.Set(x, y, palette[i])
@@ -93,21 +92,21 @@ func (world *World) drawMap(mapView MapView) {
 	case ClimateView: // (TODO) algorithm for interpreting elevation for climate
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
-				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
 	case PoliticalView: // (TODO) algorithm for interpreting political boundaries based on terrain
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
-				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
 	case BiomeView: // (TODO) alogrithm for interpreting biome based on climate, elevation, proximity to ocean, etc.
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
-				i := int(scale(world.Elevation[x][y], -1.0, 1.0, 0.0, 31.0))
+				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
