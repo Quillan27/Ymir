@@ -56,7 +56,7 @@ func newWorld(width, height int) (world *World) {
 
 // generates a height map from scratch for a new world
 func (world *World) generateTerrain() {
-	world.Terrain = addOpenSimplexNoise(world.Terrain, 0, world.Width, 0, world.Height)
+	world.Terrain = addPerlinNoise(world.Terrain, 0, world.Width, 0, world.Height)
 }
 
 // creates a map image based on the world and provided mapview

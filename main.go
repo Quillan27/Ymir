@@ -18,8 +18,10 @@ type Page struct {
 }
 
 const (
-	HTML_PATH  string = "static/layout.html" // location of HTML template
-	PAGE_TITLE string = "Ymir"               // webpage title
+	HTML_PATH    string = "static/layout.html" // location of HTML template
+	PAGE_TITLE   string = "Ymir"               // webpage title
+	WORLD_WIDTH  int    = 512
+	WORLD_HEIGHT int    = 512
 )
 
 var (
@@ -49,7 +51,7 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 // it generates a totally new world and passes back a map
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 	// create a totally new world
-	world = *newWorld(512, 512)
+	world = *newWorld(WORLD_WIDTH, WORLD_HEIGHT)
 
 	// encode the image.RGBA to a base64 encoded image
 	var buffer bytes.Buffer

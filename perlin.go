@@ -92,5 +92,5 @@ func dotGridGradient(ix, iy int, x, y float64) float64 {
 
 // interpolates linearly between two points
 func linearInterpolate(a0, a1, w float64) float64 {
-	return (1.0-w)*a0 + w*a1
+	return a0 + (w*w*w*(w*(w*(w*6-15)+10)))*(a1-a0)
 }

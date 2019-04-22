@@ -27,8 +27,8 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 	perm = make([]int16, 256)
 
 	source := make([]int16, 256)
-	for i := int16(0); i < 256; i++ {
-		source[i] = i
+	for i := range source {
+		source[i] = int16(i)
 	}
 
 	seed := rand.Int63()
@@ -40,7 +40,7 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 		seed = seed*6364136223846793005 + 1442695040888963407
 		r := int((seed + 31) % int64(i+1))
 		if r < 0 {
-			r += (i + 1)
+			r += i + 1
 		}
 		perm[i] = source[r]
 		source[r] = source[i]
@@ -48,7 +48,7 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 
 	for x := minX; x < maxX; x++ {
 		for y := minY; y < maxY; y++ {
-			grid[x][y] = opensimplex(float64(x)/100, float64(y)/100)
+			grid[x][y] = opensimplex(float64(x)/10, float64(y)/10)
 		}
 	}
 	return grid
