@@ -22,6 +22,7 @@ var perm []int16
 
 // addOpenSimplexNoise will add Open Simplex Noise
 // to the specified range of the provided 2D grid
+// (BUG) checker pattern on high x or high y values without a corresponding high x or y
 func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	perm = make([]int16, 256)
 
@@ -47,7 +48,7 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 
 	for x := minX; x < maxX; x++ {
 		for y := minY; y < maxY; y++ {
-			grid[x][y] = opensimplex(float64(x)/10, float64(y)/10)
+			grid[x][y] = opensimplex(float64(x)/100, float64(y)/100)
 		}
 	}
 	return grid
@@ -55,10 +56,9 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 
 func opensimplex(x, y float64) float64 {
 	stretchOffset := (x + y) * StretchConstant
-	xs := x + stretchOffset
-	ys := y + stretchOffset
+	xs := float64(x + stretchOffset)
+	ys := float64(y + stretchOffset)
 
-	// floor to get grid coords of the rhombus
 	xsb := int(xs)
 	ysb := int(ys)
 
@@ -74,9 +74,11 @@ func opensimplex(x, y float64) float64 {
 	dx0 := x - xb
 	dy0 := y - yb
 
+	var dx_ext, dy_ext float64
+	var xsv_ext, ysv_ext int
+
 	var value float64
 
-	// 1,0
 	dx1 := dx0 - 1 - SquishConstant
 	dy1 := dy0 - 0 - SquishConstant
 	attn1 := 2 - dx1*dx1 - dy1*dy1
@@ -85,7 +87,6 @@ func opensimplex(x, y float64) float64 {
 		value += attn1 * attn1 * extrapolate(xsb+1, ysb+0, dx1, dy1)
 	}
 
-	// 0,1
 	dx2 := dx0 - 0 - SquishConstant
 	dy2 := dy0 - 1 - SquishConstant
 	attn2 := 2 - dx2*dx2 - dy2*dy2
@@ -93,9 +94,6 @@ func opensimplex(x, y float64) float64 {
 		attn2 *= attn2
 		value += attn2 * attn2 * extrapolate(xsb+0, ysb+1, dx2, dy2)
 	}
-
-	var xsv_ext, ysv_ext int
-	var dx_ext, dy_ext float64
 
 	if inSum <= 1 {
 		zins := 1 - inSum
