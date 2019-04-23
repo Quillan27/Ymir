@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -26,7 +27,7 @@ const (
 	BiomeView                                                   // biome based on climate, elevation, wet/dryness
 	AssetsDir            string  = "assets/"                    // path to the assets directory
 	PaletteDir           string  = AssetsDir + "palettes/"      // path to the palette directory
-	ElevationPalettePath string  = PaletteDir + "bw.png"        // path to the elevation palette .png
+	ElevationPalettePath string  = PaletteDir + "elevation.png" // path to the elevation palette .png
 	ClimatePalettePath   string  = PaletteDir + "climate.png"   // path to the climatepalette .png
 	PoliticalPalettePath string  = PaletteDir + "political.png" // path to the political palette .png
 	BiomePalettePath     string  = PaletteDir + "biome.png"     // path to the biome palette .png
@@ -56,7 +57,7 @@ func newWorld(width, height int) (world *World) {
 
 // generates a height map from scratch for a new world
 func (world *World) generateTerrain() {
-	world.Terrain = addPerlinNoise(world.Terrain, 0, world.Width, 0, world.Height)
+	addPerlinNoise(&world.Terrain, 8, 2.0)
 }
 
 // creates a map image based on the world and provided mapview
@@ -76,12 +77,15 @@ func (world *World) drawMap(mapView MapView) {
 	case BiomeView:
 		palette = createPalette(BiomePalettePath)
 	}
-
+	fmt.Print(len(palette))
 	// write the map image
 	switch mapView {
 	case ElevationView:
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
+				// ensure the elevation is between -1.0 and 1.0
+				world.Terrain[x][y] = chomp(world.Terrain[x][y], -1.0, 1.0)
+
 				// map the grid value to a color in the palette
 				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 
@@ -123,11 +127,21 @@ func createPalette(path string) (palette color.Palette) {
 	imagePalette, _, _ := image.Decode(file)
 
 	// read the images pixel into a color palette
-	for i := 0; i < 31; i++ {
+	for i := 0; i < 32; i++ {
 		palette = append(palette, imagePalette.At(i, 0))
 	}
 
 	return
+}
+
+func chomp(value, min, max float64) float64 {
+	if value < min {
+		return min
+	} else if value > max {
+		return max
+	} else {
+		return value
+	}
 }
 
 // transforms a number in one range to another range

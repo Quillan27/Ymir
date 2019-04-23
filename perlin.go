@@ -16,23 +16,24 @@ const (
 	MaxVectX float64 = 1.0  // maximum vector length in x direction
 	MinVectY float64 = -1.0 // minimum vector length in y direction
 	MaxVectY float64 = 1.0  // meximum vector length in y direction
-	Scale    float64 = 5.0  // level of detail in the noise, higher is more
 )
 
 // grid of 2D gradient vectors
 var gradientField [][]Vector
 
 // adds perlin noise to a given section of a coordinate grid
-func addPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
+func addPerlinNoise(grid *[][]float64, octaves int, persistence float64) {
+	gridWidth := len(*grid)
+	gridHeight := len((*grid)[0])
 	vectXRange := MaxVectX - MinVectX
 	vectYRange := MaxVectY - MinVectY
 
 	rand.Seed(time.Now().UnixNano())
 
 	// initialized the gradient vector grid
-	gradientField = make([][]Vector, maxX-minX+1)
+	gradientField = make([][]Vector, gridWidth+1)
 	for i := range gradientField {
-		gradientField[i] = make([]Vector, maxY-minY+1)
+		gradientField[i] = make([]Vector, gridHeight+1)
 		for j := range gradientField[i] {
 			gradientField[i][j] = Vector{
 				MinVectX + rand.Float64()*vectXRange,
@@ -42,15 +43,22 @@ func addPerlinNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	}
 
 	// determine elevation a each point using the perlin() function
-	xScale := float64(maxX-minX) / Scale
-	yScale := float64(maxY-minY) / Scale
-	for x := minX; x < maxX; x++ {
-		for y := minY; y < maxY; y++ {
-			grid[x][y] += perlin(float64(x)/xScale, float64(y)/yScale)
+	for x := range *grid {
+		for y := range (*grid)[0] {
+			value := 0.0
+			frequency := 1.0
+			amplitude := 8.0
+			maxValue := -1.0
+			for i := 0; i < octaves; i++ {
+				value += perlin(float64(x)/frequency, float64(y)/frequency) * amplitude
+				maxValue += amplitude
+				amplitude *= persistence
+				frequency *= 2
+			}
+			(*grid)[x][y] = value / maxValue
 		}
 	}
 
-	return grid
 }
 
 // perlin determines a point's elevation based on
