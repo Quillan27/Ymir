@@ -20,7 +20,7 @@ type Page struct {
 const (
 	HTML_PATH    string = "static/layout.html" // location of HTML template
 	PAGE_TITLE   string = "Ymir"               // webpage title
-	WORLD_WIDTH  int    = 512
+	WORLD_WIDTH  int    = 1024
 	WORLD_HEIGHT int    = 512
 )
 
