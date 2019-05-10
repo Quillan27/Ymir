@@ -37,3 +37,5 @@ tags
 
 # VS Code
 .vscode/
+ymir
+out/map.png
