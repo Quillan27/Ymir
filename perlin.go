@@ -6,16 +6,20 @@ import (
 	"time"
 )
 
-// representation of a 2D vector
+// Vector represents a 2D vector
 type Vector struct {
 	x, y float64
 }
 
 const (
-	MinVectX float64 = -1.0 // minimum vector length in x direction
-	MaxVectX float64 = 1.0  // maximum vector length in x direction
-	MinVectY float64 = -1.0 // minimum vector length in y direction
-	MaxVectY float64 = 1.0  // meximum vector length in y direction
+	// MinVectX is the minimum vector length in x direction
+	MinVectX float64 = -1.0
+	// MaxVectX is the maximum vector length in x direction
+	MaxVectX float64 = 1.0
+	// MinVectY is the minimum vector length in y direction
+	MinVectY float64 = -1.0
+	// MaxVectY is the maximum vector length in y direction
+	MaxVectY float64 = 1.0
 )
 
 // grid of 2D gradient vectors

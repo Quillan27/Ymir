@@ -4,9 +4,19 @@ package main
 import "math/rand"
 
 const (
-	StretchConstant = -0.211324865405187 // (1/Math.sqrt(2+1)-1)/2
-	SquishConstant  = 0.366025403784439  // (Math.sqrt(2+1)-1)/2
-	NormConstant    = 47
+	// StretchConstant is used to strech a orthoganal grid
+	// into a diamond shaped one, later split into triangles
+	// (1/Math.sqrt(2+1)-1)/2
+	StretchConstant = -0.211324865405187
+
+	// SquishConstant is anothor constant used to make
+	// a diamond grid from an orthoganal one
+	// (Math.sqrt(2+1)-1)/2
+	SquishConstant = 0.366025403784439
+
+	// NormConstant is used to make the noise values more even
+	// and usable
+	NormConstant = 47
 )
 
 // gradients approximates the direction to
@@ -74,8 +84,8 @@ func opensimplex(x, y float64) float64 {
 	dx0 := x - xb
 	dy0 := y - yb
 
-	var dx_ext, dy_ext float64
-	var xsv_ext, ysv_ext int
+	var dxExt, dyExt float64
+	var xsvExt, ysvExt int
 
 	var value float64
 
@@ -99,44 +109,44 @@ func opensimplex(x, y float64) float64 {
 		zins := 1 - inSum
 		if zins > xins || zins > yins {
 			if xins > yins {
-				xsv_ext = xsb + 1
-				ysv_ext = ysb - 1
-				dx_ext = dx0 - 1
-				dy_ext = dy0 + 1
+				xsvExt = xsb + 1
+				ysvExt = ysb - 1
+				dxExt = dx0 - 1
+				dyExt = dy0 + 1
 			} else {
-				xsv_ext = xsb - 1
-				ysv_ext = ysb + 1
-				dx_ext = dx0 + 1
-				dy_ext = dy0 - 1
+				xsvExt = xsb - 1
+				ysvExt = ysb + 1
+				dxExt = dx0 + 1
+				dyExt = dy0 - 1
 			}
 		} else {
-			xsv_ext = xsb + 1
-			ysv_ext = ysb + 1
-			dx_ext = dx0 - 1 - 2*SquishConstant
-			dy_ext = dy0 - 1 - 2*SquishConstant
+			xsvExt = xsb + 1
+			ysvExt = ysb + 1
+			dxExt = dx0 - 1 - 2*SquishConstant
+			dyExt = dy0 - 1 - 2*SquishConstant
 		}
 	} else {
 		zins := 2 - inSum
 		if zins < xins || zins < yins {
 			if xins > yins {
-				xsv_ext = xsb + 2
-				ysv_ext = ysb + 0
-				dx_ext = dx0 - 2 - 2*SquishConstant
-				dy_ext = dy0 + 0 - 2*SquishConstant
+				xsvExt = xsb + 2
+				ysvExt = ysb + 0
+				dxExt = dx0 - 2 - 2*SquishConstant
+				dyExt = dy0 + 0 - 2*SquishConstant
 			} else {
-				xsv_ext = xsb + 0
-				ysv_ext = ysb + 2
-				dx_ext = dx0 + 0 - 2*SquishConstant
-				dy_ext = dy0 - 2 - 2*SquishConstant
+				xsvExt = xsb + 0
+				ysvExt = ysb + 2
+				dxExt = dx0 + 0 - 2*SquishConstant
+				dyExt = dy0 - 2 - 2*SquishConstant
 			}
 		} else {
-			dx_ext = dx0
-			dy_ext = dy0
-			xsv_ext = xsb
-			ysv_ext = ysb
+			dxExt = dx0
+			dyExt = dy0
+			xsvExt = xsb
+			ysvExt = ysb
 		}
-		xsb += 1
-		ysb += 1
+		xsb++
+		ysb++
 		dx0 = dx0 - 1 - 2*SquishConstant
 		dy0 = dy0 - 1 - 2*SquishConstant
 	}
@@ -147,10 +157,10 @@ func opensimplex(x, y float64) float64 {
 		value += attn0 * attn0 * extrapolate(xsb, ysb, dx0, dy0)
 	}
 
-	attn_ext := 2 - dx_ext*dx_ext - dy_ext*dy_ext
-	if attn_ext > 0 {
-		attn_ext *= attn_ext
-		value += attn_ext * attn_ext * extrapolate(xsv_ext, ysv_ext, dx_ext, dy_ext)
+	attnExt := 2 - dxExt*dxExt - dyExt*dyExt
+	if attnExt > 0 {
+		attnExt *= attnExt
+		value += attnExt * attnExt * extrapolate(xsvExt, ysvExt, dxExt, dyExt)
 	}
 
 	return value / NormConstant

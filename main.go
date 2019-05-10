@@ -4,61 +4,66 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"github.com/gorilla/mux"
 	"html/template"
 	"image/png"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 // Page holds the elements on the webpage
 type Page struct {
-	Title string // webpage title
-	Name  string // world name
+	Title string
+	Name  string
 }
 
 const (
-	HTML_PATH    string = "static/layout.html" // location of HTML template
-	PAGE_TITLE   string = "Ymir"               // webpage title
-	WORLD_WIDTH  int    = 1024
-	WORLD_HEIGHT int    = 512
+	// HTMLPath holds the location of HTML template
+	HTMLPath string = "static/layout.html"
+
+	// PageTitle is the web-browsers title
+	PageTitle string = "Ymir"
+
+	// WorldWidth is the default world width
+	WorldWidth int = 512
+
+	// WorldHeight is the default world height
+	WorldHeight int = 512
 )
 
 var (
-	tmpl  template.Template // HTML template for the webpage
-	world World             // the currently loaded world
+	tmpl  template.Template
+	world World
 )
 
 // pageHandler handles the loading of the webpages structure
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 	// initialize the webpage struct
 	page := Page{
-		Title: PAGE_TITLE,
+		Title: PageTitle,
 		Name:  "World Name",
 	}
 
 	// create a new template from the html layout
-	tmpl, err := template.ParseFiles(HTML_PATH)
+	tmpl, err := template.ParseFiles(HTMLPath)
 	if err != nil {
-		fmt.Print("jemplate not found\n")
+		fmt.Print("ERROR: HTML template not found\n")
 	}
 
 	// write the template to the webpage
 	tmpl.Execute(w, page)
 }
 
-// newWorldHandler handles requests from the 'New World' button
-// it generates a totally new world and passes back a map
+// handles requests from the 'New World' button
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
-	// create a totally new world
-	world = *newWorld(WORLD_WIDTH, WORLD_HEIGHT)
+	world = *newWorld(WorldWidth, WorldHeight)
 
-	// encode the image.RGBA to a base64 encoded image
 	var buffer bytes.Buffer
 	png.Encode(&buffer, &world.Map)
 	encodedImage := base64.StdEncoding.EncodeToString(buffer.Bytes())
 
-	// pass the encoded image back enclosed in HTML
+	// write the encoded image to HTML
 	w.Write([]byte("<img src=\"data:image/png;base64," + encodedImage + "\">"))
 }
 

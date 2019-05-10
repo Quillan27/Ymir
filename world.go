@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// World holds all the basic world data
 type World struct {
 	Name    string
 	Terrain [][]float64
@@ -20,20 +21,45 @@ type World struct {
 type MapView uint8
 
 const (
-	// map view enumeration
+	/* MapView enumeration */
+
+	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
+
+	// ClimateView shows average yearly temperatures
 	ClimateView
+
+	// PoliticalView shows political boundries
 	PoliticalView
+
+	// BiomeView shows biomes (duh)
+	// TODO(karl): see BiomeType enum for all the types
 	BiomeView
+
+	// TopographicView shows elevation through topographic levels
 	TopographicView
 
-	// asset file paths
-	AssetsDir              string = "assets/"
-	PaletteDir             string = AssetsDir + "palettes/"
-	ElevationPalettePath   string = PaletteDir + "elevation.png"
-	ClimatePalettePath     string = PaletteDir + "climate.png"
-	PoliticalPalettePath   string = PaletteDir + "political.png"
-	BiomePalettePath       string = PaletteDir + "biome.png"
+	// Asset file paths
+
+	// AssetDir is the path to program assets
+	AssetDir string = "assets/"
+
+	// PaletteDir is the path to MapView palettes
+	PaletteDir string = AssetDir + "palettes/"
+
+	// ElevationPalettePath is the path to the ElevationView palette
+	ElevationPalettePath string = PaletteDir + "elevation.png"
+
+	// ClimatePalettePath is the path to the ClimateView palette
+	ClimatePalettePath string = PaletteDir + "climate.png"
+
+	// PoliticalPalettePath is the path to the PoliticalView palette
+	PoliticalPalettePath string = PaletteDir + "political.png"
+
+	// BiomePalettePath is the path to the BiomeView palette
+	BiomePalettePath string = PaletteDir + "biome.png"
+
+	// TopographicPalettePath is the path to the TopographicView palette
 	TopographicPalettePath string = PaletteDir + "topographic.png"
 )
 
