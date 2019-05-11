@@ -26,10 +26,10 @@ const (
 	PageTitle string = "Ymir"
 
 	// WorldWidth is the default world width
-	WorldWidth int = 512
+	WorldWidth int = 700
 
 	// WorldHeight is the default world height
-	WorldHeight int = 512
+	WorldHeight int = 550
 )
 
 var (
@@ -61,6 +61,11 @@ func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 
 	// write the encoded image to HTML
 	w.Write([]byte(getEncodedMap()))
+}
+
+// handles a request for a new world name
+func worldNameHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("<h1>" + world.Name + "</h1>"))
 }
 
 // handles request's from the 'Elevation' button
@@ -107,6 +112,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", pageHandler)
 	router.HandleFunc("/newWorld", newWorldHandler)
+	router.HandleFunc("/worldName", worldNameHandler)
 	router.HandleFunc("/elevationView", elevationViewHandler)
 	router.HandleFunc("/biomeView", biomeViewHandler)
 	router.HandleFunc("/politicalView", politicalViewHandler)

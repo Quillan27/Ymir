@@ -1,10 +1,15 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
+	"math/rand"
 	"os"
+	"strings"
+	"time"
 )
 
 // World holds all the basic world data
@@ -220,7 +225,39 @@ func (world *World) exportMap() {
 	png.Encode(file, &world.Map)
 }
 
+// reads in a file and return the lines as an slice of strings
+func splitLines(path string) (lines []string, scanErr error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	scanErr = scanner.Err()
+
+	return
+}
+
 // (TODO) generates a new random name for the world
 func (world *World) name() {
-	world.Name = "New World"
+	syllables, err := splitLines("assets/naming/world.txt")
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	var name string
+	rand.Seed(time.Now().UnixNano())
+	numOfSyllables := int(2 + rand.Float64()*2)
+	for i := 0; i < numOfSyllables; i++ {
+		name += syllables[int(rand.Float64()*float64(len(syllables)-1))]
+	}
+
+	name = strings.Title(name)
+
+	fmt.Print(name, "\n")
+	world.Name = name
 }
