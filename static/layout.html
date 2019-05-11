@@ -12,12 +12,11 @@
 		<h1>{{.Name}}</h1>
 		<div id="map"></div>
 		<button onclick="newWorld()">New World</button>
-		<select>
-			<option value="elevation">Elevation</option>
-			<option value="climate">Climate</option>
-			<option value="political">Political</option>
-			<option value="biome">Biome</option>
-		</select>
+		<button onclick="elevationView()">Elevation</button>
+		<button onclick="biomeView()">Biome</button>
+		<button onclick="politicalView()">Political</button>
+		<button onclick="climateView()">Climate</button>
+		<button onclick="topographyView()">Topography</button>
 	<script>
 		function newWorld() {
 			const xhttp = new XMLHttpRequest();
@@ -27,7 +26,72 @@
 					document.getElementById("map").innerHTML = this.responseText;
 				}
 			};
-			xhttp.open("POST", "/map");
+			xhttp.open("POST", "/newWorld");
+			xhttp.send();
+			console.log("request sent");
+		}
+		
+		function elevationView() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/elevationView");
+			xhttp.send();
+			console.log("request sent");
+		}
+
+		function biomeView() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/biomeView");
+			xhttp.send();
+			console.log("request sent");
+		}
+			
+		function politicalView() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/politicalView");
+			xhttp.send();
+			console.log("request sent");
+		}
+	
+		function climateView() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/climateView");
+			xhttp.send();
+			console.log("request sent");
+		}
+		
+		function topographyView() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if(this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText)
+					document.getElementById("map").innerHTML = this.responseText;
+				}
+			};
+			xhttp.open("POST", "/topographyView");
 			xhttp.send();
 			console.log("request sent");
 		}

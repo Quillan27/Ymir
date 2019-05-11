@@ -21,7 +21,7 @@ type World struct {
 type MapView uint8
 
 const (
-	/* MapView enumeration */
+	/*** MapView ENUMERATION ***/
 
 	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
@@ -36,10 +36,10 @@ const (
 	// TODO(karl): see BiomeType enum for all the types
 	BiomeView
 
-	// TopographicView shows elevation through topographic levels
-	TopographicView
+	// TopographyView shows elevation through topography levels
+	TopographyView
 
-	// Asset file paths
+	/*** ASSET FILE PATHS ***/
 
 	// AssetDir is the path to program assets
 	AssetDir string = "assets/"
@@ -50,17 +50,17 @@ const (
 	// ElevationPalettePath is the path to the ElevationView palette
 	ElevationPalettePath string = PaletteDir + "elevation.png"
 
-	// ClimatePalettePath is the path to the ClimateView palette
-	ClimatePalettePath string = PaletteDir + "climate.png"
+	// BiomePalettePath is the path to the BiomeView palette
+	BiomePalettePath string = PaletteDir + "biome.png"
 
 	// PoliticalPalettePath is the path to the PoliticalView palette
 	PoliticalPalettePath string = PaletteDir + "political.png"
 
-	// BiomePalettePath is the path to the BiomeView palette
-	BiomePalettePath string = PaletteDir + "biome.png"
+	// ClimatePalettePath is the path to the ClimateView palette
+	ClimatePalettePath string = PaletteDir + "climate.png"
 
-	// TopographicPalettePath is the path to the TopographicView palette
-	TopographicPalettePath string = PaletteDir + "topographic.png"
+	// TopographyPalettePath is the path to the TopographyView palette
+	TopographyPalettePath string = PaletteDir + "topography.png"
 )
 
 func newWorld(width, height int) (world *World) {
@@ -75,7 +75,7 @@ func newWorld(width, height int) (world *World) {
 	}
 
 	world.generateTerrain()
-	world.drawMap(TopographicView)
+	world.drawMap(ElevationView) // ElevatioView is the default
 	world.name()
 	world.exportMap()
 	return
@@ -92,14 +92,14 @@ func (world *World) drawMap(mapView MapView) {
 	switch mapView {
 	case ElevationView:
 		palette = createPalette(ElevationPalettePath)
-	case ClimateView:
-		palette = createPalette(ClimatePalettePath)
-	case PoliticalView:
-		palette = createPalette(PoliticalPalettePath)
 	case BiomeView:
 		palette = createPalette(BiomePalettePath)
-	case TopographicView:
-		palette = createPalette(TopographicPalettePath)
+	case PoliticalView:
+		palette = createPalette(PoliticalPalettePath)
+	case ClimateView:
+		palette = createPalette(ClimatePalettePath)
+	case TopographyView:
+		palette = createPalette(TopographyPalettePath)
 	}
 
 	switch mapView {
@@ -115,7 +115,7 @@ func (world *World) drawMap(mapView MapView) {
 				world.Map.Set(x, y, palette[color])
 			}
 		}
-	case ClimateView: // (TODO) algorithm for interpreting elevation for climate
+	case BiomeView: // (TODO) algorithm for interpreting elevation for climate
 		for x := 0; x < world.Map.Bounds().Max.X; x++ {
 			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
 				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
@@ -129,14 +129,14 @@ func (world *World) drawMap(mapView MapView) {
 				world.Map.Set(x, y, palette[i])
 			}
 		}
-	case BiomeView: // (TODO) alogrithm for interpreting biome based on climate, elevation, proximity to ocean, etc.
+	case ClimateView: // (TODO) alogrithm for interpreting biome based on climate, elevation, proximity to ocean, etc.
 		for x := 0; x < world.Width; x++ {
 			for y := 0; y < world.Height; y++ {
 				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				world.Map.Set(x, y, palette[i])
 			}
 		}
-	case TopographicView: // black if next to a lower elevation, white if below sealevel or otherwise
+	case TopographyView: // black if next to a lower elevation, white if below sealevel or otherwise
 		for x := 0; x < world.Width; x++ {
 			for y := 0; y < world.Height; y++ {
 				world.Terrain[x][y] = chompFloat(world.Terrain[x][y], -1.0, 1.0)

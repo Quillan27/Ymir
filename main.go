@@ -59,19 +59,59 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 	world = *newWorld(WorldWidth, WorldHeight)
 
+	// write the encoded image to HTML
+	w.Write([]byte(getEncodedMap()))
+}
+
+// handles request's from the 'Elevation' button
+func elevationViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(ElevationView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// handles request's from the 'Biome' button
+func biomeViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(BiomeView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// handles request's from the 'Political' button
+func politicalViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(PoliticalView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// handles request's from the 'Climate' button
+func climateViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(ClimateView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// handles request's from the 'Topography' button
+func topographyViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(TopographyView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// encodes the current world's map into a base64 image for HTML
+func getEncodedMap() string {
 	var buffer bytes.Buffer
 	png.Encode(&buffer, &world.Map)
 	encodedImage := base64.StdEncoding.EncodeToString(buffer.Bytes())
 
-	// write the encoded image to HTML
-	w.Write([]byte("<img src=\"data:image/png;base64," + encodedImage + "\">"))
+	return "<img src=\"data:image/png;base64," + encodedImage + "\">"
 }
 
 func main() {
 	// creating a new routing solution and adding handlers
 	router := mux.NewRouter()
 	router.HandleFunc("/", pageHandler)
-	router.HandleFunc("/map", newWorldHandler)
+	router.HandleFunc("/newWorld", newWorldHandler)
+	router.HandleFunc("/elevationView", elevationViewHandler)
+	router.HandleFunc("/biomeView", biomeViewHandler)
+	router.HandleFunc("/politicalView", politicalViewHandler)
+	router.HandleFunc("/climateView", climateViewHandler)
+	router.HandleFunc("/topographyView", topographyViewHandler)
 
 	// open the server, report errors if needed
 	fmt.Printf("Listening on :8080...\n")
