@@ -110,6 +110,12 @@ func getEncodedMap() string {
 func main() {
 	// creating a new routing solution and adding handlers
 	router := mux.NewRouter()
+
+	// serve static files used by the webpage
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
+	// add various handlers for buttons and labels
+	// TODO: Can this be consolidated?
 	router.HandleFunc("/", pageHandler)
 	router.HandleFunc("/newWorld", newWorldHandler)
 	router.HandleFunc("/worldName", worldNameHandler)

@@ -3,108 +3,10 @@
 		<meta charset="UTF-8">
 		<title>{{.Title}}</title>
 		<link href="https://fonts.googleapis.com/css?family=UnifrakturCook:700|IBM+Plex+Sans" rel="stylesheet">
-		<style>
-			* {
-				box-sizing: border-box;
-			}
-
-			h1 {
-				font-family: UnifrakturCook, cursive;
-				font-size: 34px;
-				color: #202020;
-				text-align: center;
-			}
-
-			div {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-			
-			button {
-				background: #e0e0e0;
-				border-radius: 4px;
-				font-family: IBM Plex Sans, sans-serif;
-				color: #202020;
-				font-size: 14px;
-				border-style: none;
-				width: 75%;
-				height: 70%;
-				line-height: 30px;
-			}
-
-			.grid-container {
-				display: grid;
-				grid-template-columns: 0.5fr 2fr 0.5fr;
-				grid-template-rows: 0.5fr 2fr 0.5fr;
-				grid-template-areas: ". . ." ". Content ." ". . .";
-			}
-
-			.Content {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr;
-				grid-template-rows: 1fr 1fr;
-				grid-template-areas: "Map Map Controls" "Map Map Controls";
-				grid-area: Content;
-			}
-
-			.Map {
-				grid-area: Map;
-			}
-
-			.Controls {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr;
-				grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-				grid-template-areas: "WorldName WorldName WorldName" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "NewWorld SaveMap Settings";
-  				grid-area: Controls;
-			}
-
-			.NewWorld {
-				grid-area: NewWorld;
-			}
-
-			.SaveMap {
-				grid-area: SaveMap;
-			}
-
-			.Settings {
-				grid-area: Settings;
-			}
-
-			.WorldName { grid-area: WorldName; }
-
-			.MapViews {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-				grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-				grid-template-areas: ". Elevation Elevation Elevation ." ". Biome Biome Biome ." ". Political Political Political ." ". Climate Climate Climate ." ". Topography Topography Topography .";
-				grid-area: MapViews;
-				height: 100%;
-			}
-
-			.Elevation {
-				grid-area: Elevation;
-			}
-
-			.Biome {
-				grid-area: Biome;
-			}
-
-			.Political {
-				grid-area: Political;
-			}
-
-			.Climate {
-				grid-area: Climate; 
-			}
-
-			.Topography {
-				grid-area: Topography;
-			}
-		</style>
+		<link rel="stylesheet" href="static/styles.css" type="text/css">
 	</head>
 	<body>
+		<script src="static/handler.js"></script>
 		<div class="grid-container">
 			<div class="Content">
 				<div id="map" class="Map"></div>
@@ -128,7 +30,7 @@
 
 					<div class="MapViews">
 						<div class="Elevation">
-							<button onclick="elevationView()">Elevation</button>
+							<button onclick="elevationView()"><img src="/static/icons/elevation.png">Elevation</button>
 						</div>
 
 						<div class="Biome">
@@ -150,98 +52,5 @@
 				</div>
 			</div>
 		</div>
-	<script>
-		function newWorld() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/newWorld");
-			xhttp.send();
-			console.log("request sent");
-			worldName();
-		}
-
-		function worldName() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("worldName").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/worldName");
-			xhttp.send();
-			console.log("request sent");
-		}
-
-		function elevationView() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/elevationView");
-			xhttp.send();
-			console.log("request sent");
-		}
-
-		function biomeView() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/biomeView");
-			xhttp.send();
-			console.log("request sent");
-		}
-			
-		function politicalView() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/politicalView");
-			xhttp.send();
-			console.log("request sent");
-		}
-	
-		function climateView() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/climateView");
-			xhttp.send();
-			console.log("request sent");
-		}
-		
-		function topographyView() {
-			const xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					console.log(this.responseText)
-					document.getElementById("map").innerHTML = this.responseText;
-				}
-			};
-			xhttp.open("POST", "/topographyView");
-			xhttp.send();
-			console.log("request sent");
-		}
-	</script>
 	</body>
 </html>
