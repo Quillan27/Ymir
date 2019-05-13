@@ -62,7 +62,6 @@ func addPerlinNoise(grid *[][]float64, octaves int, persistence float64) {
 			(*grid)[x][y] = value / maxValue
 		}
 	}
-
 }
 
 // perlin determines a point's elevation based on

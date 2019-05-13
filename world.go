@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// World holds all the basic world data
+// World holds all the basic w data
 type World struct {
 	Name    string
 	Terrain [][]float64
@@ -25,8 +25,16 @@ type World struct {
 // and how the map is generated from the terrain
 type MapView uint8
 
+// NoiseType determines the algorithms for w generation
+// TODO(karl): set noise based on user settings
+type NoiseType uint8
+
+// BiomeType is used to enumerate biomes
+// TOOD(karl): make this enumeration
+type BiomeType uint8
+
 const (
-	/*** MapView ENUMERATION ***/
+	// MAPVIEW ENUMERATION
 
 	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
@@ -38,13 +46,13 @@ const (
 	PoliticalView
 
 	// BiomeView shows biomes (duh)
-	// TODO(karl): see BiomeType enum for all the types
+	// TODO(karl): make BiomeType enum
 	BiomeView
 
 	// TopographyView shows elevation through topography levels
 	TopographyView
 
-	/*** ASSET FILE PATHS ***/
+	// ASSET FILE PATHS -------------------------------------------------------
 
 	// AssetDir is the path to program assets
 	AssetDir string = "assets/"
@@ -66,33 +74,51 @@ const (
 
 	// TopographyPalettePath is the path to the TopographyView palette
 	TopographyPalettePath string = PaletteDir + "topography.png"
+
+	/*** NOISE CONSTANTS ***/
+
+	// Octaves controls how many times the noise function is called
+	Octaves int = 8
+
+	// Persistence controls how much effect the noise will have over time
+	Persistence float64 = 2.0
+
+	/*** NAMING CONSTANTS ***/
+
+	// MinSyllables is the minimum number of syllables a name can have
+	MinSyllables int = 2
+
+	// MaxSyllables is the maximum number of syllables a name can have
+	MaxSyllables int = 4
 )
 
-func newWorld(width, height int) (world *World) {
-	world = new(World)
+func newWorld(width, height int) (w *World) {
+	w = new(World)
 
-	world.Width = width
-	world.Height = height
+	w.Width = width
+	w.Height = height
 
-	world.Terrain = make([][]float64, world.Width)
-	for x := range world.Terrain {
-		world.Terrain[x] = make([]float64, world.Height)
+	w.Terrain = make([][]float64, w.Width)
+	for x := range w.Terrain {
+		w.Terrain[x] = make([]float64, w.Height)
 	}
 
-	world.generateTerrain()
-	world.drawMap(ElevationView) // ElevatioView is the default
-	world.name()
-	world.exportMap()
+	w.generateTerrain()
+	// TODO: set to current view, for now ElevationView is default
+	w.drawMap(ElevationView)
+	w.name()
 	return
 }
 
-func (world *World) generateTerrain() {
-	addPerlinNoise(&world.Terrain, 8, 2.0)
+func (w *World) generateTerrain() {
+	addPerlinNoise(&w.Terrain, Octaves, Persistence)
 }
 
-func (world *World) drawMap(mapView MapView) {
-	world.Map = *image.NewRGBA(image.Rect(0, 0, world.Width, world.Height)) // new blank RGBA image
+func (w *World) drawMap(mapView MapView) {
+	// create a new, blank RGBA image
+	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
 
+	// get the map's color palette based on the MapView
 	palette := color.Palette{}
 	switch mapView {
 	case ElevationView:
@@ -107,46 +133,47 @@ func (world *World) drawMap(mapView MapView) {
 		palette = createPalette(TopographyPalettePath)
 	}
 
+	// interpret colors based on the MapView
 	switch mapView {
 	case ElevationView:
-		for x := 0; x < world.Width; x++ {
-			for y := 0; y < world.Height; y++ {
+		for x := 0; x < w.Width; x++ {
+			for y := 0; y < w.Height; y++ {
 				// ensure the elevation is between -1.0 and 1.0
-				world.Terrain[x][y] = chompFloat(world.Terrain[x][y], -1.0, 1.0)
+				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], -1.0, 1.0)
 
 				// map the grid value to a color in the palette between 0 and 31
-				color := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				color := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 
-				world.Map.Set(x, y, palette[color])
+				w.Map.Set(x, y, palette[color])
 			}
 		}
-	case BiomeView: // (TODO) algorithm for interpreting elevation for climate
-		for x := 0; x < world.Map.Bounds().Max.X; x++ {
-			for y := 0; y < world.Map.Bounds().Max.Y; y++ {
-				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				world.Map.Set(x, y, palette[i])
+	case BiomeView: // (TODO) algorithm for interpreting biome based on elevation, climate, and moisture
+		for x := 0; x < w.Map.Bounds().Max.X; x++ {
+			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
+				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				w.Map.Set(x, y, palette[i])
 			}
 		}
 	case PoliticalView: // (TODO) algorithm for interpreting political boundaries based on terrain
-		for x := 0; x < world.Width; x++ {
-			for y := 0; y < world.Height; y++ {
-				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				world.Map.Set(x, y, palette[i])
+		for x := 0; x < w.Width; x++ {
+			for y := 0; y < w.Height; y++ {
+				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case ClimateView: // (TODO) alogrithm for interpreting biome based on climate, elevation, proximity to ocean, etc.
-		for x := 0; x < world.Width; x++ {
-			for y := 0; y < world.Height; y++ {
-				i := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				world.Map.Set(x, y, palette[i])
+	case ClimateView: // (TODO) alogrithm for interpreting climate
+		for x := 0; x < w.Width; x++ {
+			for y := 0; y < w.Height; y++ {
+				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				w.Map.Set(x, y, palette[i])
 			}
 		}
 	case TopographyView: // black if next to a lower elevation, white if below sealevel or otherwise
-		for x := 0; x < world.Width; x++ {
-			for y := 0; y < world.Height; y++ {
-				world.Terrain[x][y] = chompFloat(world.Terrain[x][y], -1.0, 1.0)
+		for x := 0; x < w.Width; x++ {
+			for y := 0; y < w.Height; y++ {
+				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], -1.0, 1.0)
 
-				color := int(scale(world.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				color := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 
 				black := 0
 				white := 31
@@ -155,40 +182,43 @@ func (world *World) drawMap(mapView MapView) {
 				sealevel := 16
 				if color < sealevel {
 					color = water
-				} else if int(scale(world.Terrain[chompInt(x+1, 0, world.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(world.Terrain[x][chompInt(y+1, 0, world.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(world.Terrain[x][chompInt(y-1, 0, world.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(world.Terrain[chompInt(x-1, 0, world.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color {
+				} else if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color ||
+					int(scale(w.Terrain[x][chompInt(y+1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
+					int(scale(w.Terrain[x][chompInt(y-1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
+					int(scale(w.Terrain[chompInt(x-1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color {
 					color = black
 				} else {
 					color = white
 				}
 
-				if int(scale(world.Terrain[chompInt(x+1, 0, world.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) == sealevel-1 && (y%4 == 0) {
+				if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) == sealevel-1 && (y%4 == 0) {
 					color = wave
 				}
 
-				world.Map.Set(x, y, palette[color])
+				w.Map.Set(x, y, palette[color])
 			}
 		}
 	}
-
+	w.exportMap() // TOD0(karl): remove this, map to a button
 }
 
-// returns an array of colors from a .png image
-func createPalette(path string) (palette color.Palette) {
-	file, _ := os.Open(path)
-	defer file.Close()
+// createPalette returns an array of colors from a premade .png image
+func createPalette(path string) (p color.Palette) {
+	f, _ := os.Open(path)
+	defer f.Close()
 
-	imagePalette, _, _ := image.Decode(file)
+	i, _, _ := image.Decode(f)
 
-	for i := 0; i < 32; i++ {
-		palette = append(palette, imagePalette.At(i, 0))
+	// TODO(karl): 32 needs to be replaces by the actual number of colors
+	for x := 0; x < 32; x++ {
+		p = append(p, i.At(x, 0))
 	}
 
 	return
 }
 
+// chompInt keeps an int inside a specified range
+// TODO: go needs generics, lol
 func chompInt(value, min, max int) int {
 	if value < min {
 		return min
@@ -199,6 +229,8 @@ func chompInt(value, min, max int) int {
 	}
 }
 
+// chompFloat keeps a float64 inside a specified range
+// TODO(karl): i hate that these are two functions
 func chompFloat(value, min, max float64) float64 {
 	if value < min {
 		return min
@@ -209,55 +241,58 @@ func chompFloat(value, min, max float64) float64 {
 	}
 }
 
-// transforms a number in one range to another range
+// scale maps a number in one range to another range
 func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
 	return (value-oldMin)*(newMax-newMin)/(oldMax-oldMin) + newMin
 }
 
-// saves the current world's map to disk
-func (world *World) exportMap() {
-	file, err := os.Create("out/map.png")
+// exportMap exports the current w's map to disk
+func (w *World) exportMap() {
+	f, err := os.Create("out/map.png")
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer f.Close()
 
-	png.Encode(file, &world.Map)
+	png.Encode(f, &w.Map)
 }
 
-// reads in a file and return the lines as an slice of strings
-func splitLines(path string) (lines []string, scanErr error) {
-	file, err := os.Open(path)
+// splitLines reads in a file and return the lines as a slice of strings
+func splitLines(path string) (lines []string, err error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer f.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
+	s := bufio.NewScanner(f)
+	for s.Scan() {
+		lines = append(lines, s.Text())
 	}
-	scanErr = scanner.Err()
+	err = s.Err()
 
 	return
 }
 
-// (TODO) generates a new random name for the world
-func (world *World) name() {
-	syllables, err := splitLines("assets/naming/world.txt")
+// name names the w
+// generates using a random sequence of pre-defined sylablles
+// TODO(karl): clean up syllables so names are pronouncable
+// BUG(karl): name seems to be one-behind
+func (w *World) name() {
+	syllables, err := splitLines("assets/naming/world.txt") // TODO(karl): filename constant
 	if err != nil {
-		fmt.Print(err)
+		fmt.Print("ERROR: syllables for naming could not be read\n")
 	}
 
-	var name string
 	rand.Seed(time.Now().UnixNano())
-	numOfSyllables := int(2 + rand.Float64()*2)
+
+	var name string
+	// TODO: can this be cleaner without casting?
+	numOfSyllables := MinSyllables + int(rand.Float64()*float64(MaxSyllables-MinSyllables))
 	for i := 0; i < numOfSyllables; i++ {
+		// TODO: again, can we clean this up?
 		name += syllables[int(rand.Float64()*float64(len(syllables)-1))]
 	}
 
-	name = strings.Title(name)
-
-	fmt.Print(name, "\n")
-	world.Name = name
+	w.Name = strings.Title(name)
 }

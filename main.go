@@ -26,10 +26,10 @@ const (
 	PageTitle string = "Ymir"
 
 	// WorldWidth is the default world width
-	WorldWidth int = 700
+	WorldWidth int = 750
 
 	// WorldHeight is the default world height
-	WorldHeight int = 550
+	WorldHeight int = 600
 )
 
 var (
