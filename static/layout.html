@@ -11,43 +11,42 @@
 			<div class="Content">
 				<div id="map" class="Map"></div>
 				<div class="Controls">
-					<div class="NewWorld">
-						
-						<button onclick="newWorld()">New World</button>
-					</div>
-
-					<div class="SaveMap">
-						<button onclick="saveMap()">Save Map</button>
-					</div>
-
-					<div class="Settings">
-						<button onclick="changeSettings()">Settings</button>
-					</div>
-
 					<div id="worldName" class="WorldName">
-						<h1>{{.Name}}</h1>
+							<h1>{{.Name}}</h1>
 					</div>
 
 					<div class="MapViews">
 						<div class="Elevation">
-							<button onclick="elevationView()"><img src="/static/icons/elevation.png">Elevation</button>
+							<button onclick="elevationView()"><img src="/static/icons/elevation.png">&nbsp;&nbsp;Elevation</button>
 						</div>
 
 						<div class="Biome">
-							<button onclick="biomeView()">Biome</button>
+							<button onclick="biomeView()"><img src="/static/icons/biome.png">&nbsp;&nbsp;Biome</button>
 						</div>
 
 						<div class="Political">
-							<button onclick="politicalView()">Political</button>
+							<button onclick="politicalView()"><img src="/static/icons/political.png">&nbsp;&nbsp;Political</button>
 						</div>
 
 						<div class="Climate">
-							<button onclick="climateView()">Climate</button>
+							<button onclick="climateView()"><img src="/static/icons/climate.png">&nbsp;&nbsp;Climate</button>
 						</div>
 
 						<div class="Topography">
-							<button onclick="topographyView()">Topography</button>
+							<button onclick="topographyView()"><img src="/static/icons/topography.png">&nbsp;&nbsp;Topography</button>
 						</div>
+					</div>
+					
+					<div class="NewWorld">
+						<button onclick="newWorld()"><img src="/static/icons/newWorld.png"></button>
+					</div>
+
+					<div class="SaveMap">
+						<button onclick="saveMap()"><img src="/static/icons/save.png"></button>
+					</div>
+
+					<div class="Settings">
+						<button onclick="changeSettings()"><img src="/static/icons/settings.png"></button>
 					</div>
 				</div>
 			</div>

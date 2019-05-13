@@ -23,8 +23,11 @@ button {
 	font-size: 14px;
 	border-style: none;
 	width: 75%;
-	height: 70%;
-	line-height: 30px;
+	padding: 7px 0px;
+}
+
+img {
+	vertical-align: middle;
 }
 
 .grid-container {
@@ -51,7 +54,7 @@ button {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	grid-template-areas: "WorldName WorldName WorldName" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "NewWorld SaveMap Settings";
-	  grid-area: Controls;
+	grid-area: Controls;
 }
 
 .NewWorld {
@@ -66,7 +69,10 @@ button {
 	grid-area: Settings;
 }
 
-.WorldName { grid-area: WorldName; }
+.WorldName {
+	grid-area: WorldName;
+}
+
 
 .MapViews {
 	display: grid;
