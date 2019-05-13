@@ -6,6 +6,7 @@
 
 ![Example Elevation](https://raw.githubusercontent.com/karledramberg/ymir/master/assets/images/exampleElevationMap.png)
 ![Example Topography](https://raw.githubusercontent.com/karledramberg/ymir/master/assets/images/exampleTopographyMap.png)
+
 Early examples of elevation maps 
 
 ### Goals
