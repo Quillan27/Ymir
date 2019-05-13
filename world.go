@@ -104,7 +104,7 @@ func newWorld(width, height int) (w *World) {
 	}
 
 	w.generateTerrain()
-	// TODO: set to current view, for now ElevationView is default
+	// TODO(karl): set to current view, for now ElevationView is default
 	w.drawMap(ElevationView)
 	w.name()
 	return
@@ -147,21 +147,21 @@ func (w *World) drawMap(mapView MapView) {
 				w.Map.Set(x, y, palette[color])
 			}
 		}
-	case BiomeView: // (TODO) algorithm for interpreting biome based on elevation, climate, and moisture
+	case BiomeView: // TODO(karl): algorithm for interpreting biome based on elevation, climate, and moisture
 		for x := 0; x < w.Map.Bounds().Max.X; x++ {
 			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case PoliticalView: // (TODO) algorithm for interpreting political boundaries based on terrain
+	case PoliticalView: // TODO(karl): algorithm for interpreting political boundaries based on terrain
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case ClimateView: // (TODO) alogrithm for interpreting climate
+	case ClimateView: // TODO(karl): alogrithm for interpreting climate
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
@@ -218,7 +218,7 @@ func createPalette(path string) (p color.Palette) {
 }
 
 // chompInt keeps an int inside a specified range
-// TODO: go needs generics, lol
+// TODO(karl): go needs generics, lol
 func chompInt(value, min, max int) int {
 	if value < min {
 		return min
@@ -246,7 +246,7 @@ func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
 	return (value-oldMin)*(newMax-newMin)/(oldMax-oldMin) + newMin
 }
 
-// exportMap exports the current w's map to disk
+// exportMap exports the current world's map to disk
 func (w *World) exportMap() {
 	f, err := os.Create("out/map.png")
 	if err != nil {
@@ -274,7 +274,7 @@ func splitLines(path string) (lines []string, err error) {
 	return
 }
 
-// name names the w
+// name names the world
 // generates using a random sequence of pre-defined sylablles
 // TODO(karl): clean up syllables so names are pronouncable
 // BUG(karl): name seems to be one-behind
@@ -287,10 +287,10 @@ func (w *World) name() {
 	rand.Seed(time.Now().UnixNano())
 
 	var name string
-	// TODO: can this be cleaner without casting?
+	// TOD(karl): can this be cleaner without casting?
 	numOfSyllables := MinSyllables + int(rand.Float64()*float64(MaxSyllables-MinSyllables))
 	for i := 0; i < numOfSyllables; i++ {
-		// TODO: again, can we clean this up?
+		// TODO(karl): again, can we clean this up?
 		name += syllables[int(rand.Float64()*float64(len(syllables)-1))]
 	}
 
