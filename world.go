@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// World holds all the basic w data
+// World holds all the basic world data
 type World struct {
 	Name    string
 	Terrain [][]float64
@@ -25,7 +25,7 @@ type World struct {
 // and how the map is generated from the terrain
 type MapView uint8
 
-// NoiseType determines the algorithms for w generation
+// NoiseType determines the algorithms for world generation
 // TODO(karl): set noise based on user settings
 type NoiseType uint8
 
