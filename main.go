@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Page holds the elements on the webpage
+// Page holds the un-changing elements on the webpage
 type Page struct {
 	Title string
 	Name  string
@@ -26,21 +26,26 @@ const (
 	PageTitle string = "Ymir"
 
 	// WorldWidth is the default world width
+	// TODO(karl): turn into variable and set via settings menu
 	WorldWidth int = 750
 
 	// WorldHeight is the default world height
+	// TODO(karl): turn into variable and set via settings menu
 	WorldHeight int = 600
 )
 
 var (
-	tmpl  template.Template
+	// tmpl is the HTML template for generating the webpage
+	tmpl template.Template
+
+	// world is the default current world being displayed
 	world World
 )
 
 // pageHandler handles the loading of the webpages structure
 func pageHandler(w http.ResponseWriter, r *http.Request) {
 	// initialize the webpage struct
-	page := Page{
+	p := Page{
 		Title: PageTitle,
 		Name:  "World Name",
 	}
@@ -52,8 +57,11 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// write the template to the webpage
-	tmpl.Execute(w, page)
+	tmpl.Execute(w, p)
 }
+
+// TODO(karl): Can these handles be consolidated?
+// Can I check a button id to make this cleaner?
 
 // handles requests from the 'New World' button
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
@@ -102,32 +110,32 @@ func topographyViewHandler(w http.ResponseWriter, r *http.Request) {
 func getEncodedMap() string {
 	var buffer bytes.Buffer
 	png.Encode(&buffer, &world.Map)
-	encodedImage := base64.StdEncoding.EncodeToString(buffer.Bytes())
+	i := base64.StdEncoding.EncodeToString(buffer.Bytes())
 
-	return "<img src=\"data:image/png;base64," + encodedImage + "\">"
+	return "<img src=\"data:image/png;base64," + i + "\">"
 }
 
 func main() {
 	// creating a new routing solution and adding handlers
-	router := mux.NewRouter()
+	r := mux.NewRouter()
 
 	// serve static files used by the webpage
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
+		http.FileServer(http.Dir("static"))))
 
 	// add various handlers for buttons and labels
-	// TODO: Can this be consolidated?
-	router.HandleFunc("/", pageHandler)
-	router.HandleFunc("/newWorld", newWorldHandler)
-	router.HandleFunc("/worldName", worldNameHandler)
-	router.HandleFunc("/elevationView", elevationViewHandler)
-	router.HandleFunc("/biomeView", biomeViewHandler)
-	router.HandleFunc("/politicalView", politicalViewHandler)
-	router.HandleFunc("/climateView", climateViewHandler)
-	router.HandleFunc("/topographyView", topographyViewHandler)
+	r.HandleFunc("/", pageHandler)
+	r.HandleFunc("/newWorld", newWorldHandler)
+	r.HandleFunc("/worldName", worldNameHandler)
+	r.HandleFunc("/elevationView", elevationViewHandler)
+	r.HandleFunc("/biomeView", biomeViewHandler)
+	r.HandleFunc("/politicalView", politicalViewHandler)
+	r.HandleFunc("/climateView", climateViewHandler)
+	r.HandleFunc("/topographyView", topographyViewHandler)
 
 	// open the server, report errors if needed
 	fmt.Printf("Listening on :8080...\n")
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

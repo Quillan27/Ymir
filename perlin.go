@@ -54,7 +54,8 @@ func addPerlinNoise(grid *[][]float64, octaves int, persistence float64) {
 			amplitude := 8.0
 			maxValue := -1.0
 			for i := 0; i < octaves; i++ {
-				value += perlin(float64(x)/frequency, float64(y)/frequency) * amplitude
+				value += perlin(float64(x)/frequency,
+					float64(y)/frequency) * amplitude
 				maxValue += amplitude
 				amplitude *= persistence
 				frequency *= 2

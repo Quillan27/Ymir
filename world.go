@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -16,8 +15,8 @@ import (
 type World struct {
 	Name    string
 	Terrain [][]float64
-	Width   int
-	Height  int
+	Width   int // used for readability instead of using
+	Height  int // len(Terrain) or len(Terrain[0])
 	Map     image.RGBA
 }
 
@@ -26,6 +25,7 @@ type World struct {
 type MapView uint8
 
 // NoiseType determines the algorithms for world generation
+// for now only Perlin noise and OpenSimplex are implemented
 // TODO(karl): set noise based on user settings
 type NoiseType uint8
 
@@ -34,7 +34,7 @@ type NoiseType uint8
 type BiomeType uint8
 
 const (
-	// MAPVIEW ENUMERATION
+	// MAPVIEW ENUMERATION -----------------------------------------------------
 
 	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
@@ -52,7 +52,7 @@ const (
 	// TopographyView shows elevation through topography levels
 	TopographyView
 
-	// ASSET FILE PATHS -------------------------------------------------------
+	// ASSET FILE PATHS --------------------------------------------------------
 
 	// AssetDir is the path to program assets
 	AssetDir string = "assets/"
@@ -75,7 +75,7 @@ const (
 	// TopographyPalettePath is the path to the TopographyView palette
 	TopographyPalettePath string = PaletteDir + "topography.png"
 
-	/*** NOISE CONSTANTS ***/
+	// NOISE CONSTANTS ---------------------------------------------------------
 
 	// Octaves controls how many times the noise function is called
 	Octaves int = 8
@@ -83,7 +83,7 @@ const (
 	// Persistence controls how much effect the noise will have over time
 	Persistence float64 = 2.0
 
-	/*** NAMING CONSTANTS ***/
+	// NAMING CONSTANTS --------------------------------------------------------
 
 	// MinSyllables is the minimum number of syllables a name can have
 	MinSyllables int = 2
@@ -92,28 +92,38 @@ const (
 	MaxSyllables int = 4
 )
 
+// newWorld starts acts like a constructor for the World struct
+// it initializes terrain, names, and map
 func newWorld(width, height int) (w *World) {
 	w = new(World)
 
 	w.Width = width
 	w.Height = height
 
+	w.generateTerrain()
+
+	// TODO(karl): set to current view, for now ElevationView is default
+	w.drawMap(ElevationView)
+
+	w.name()
+
+	return
+}
+
+// generateTerrain initializes the terrain's 2D array and generates elevations
+// TODO(karl): more realistic / complex than just adding noise,
+// generation should be based on plate tectonics and other
+// realistic systems
+func (w *World) generateTerrain() {
 	w.Terrain = make([][]float64, w.Width)
 	for x := range w.Terrain {
 		w.Terrain[x] = make([]float64, w.Height)
 	}
 
-	w.generateTerrain()
-	// TODO(karl): set to current view, for now ElevationView is default
-	w.drawMap(ElevationView)
-	w.name()
-	return
-}
-
-func (w *World) generateTerrain() {
 	addPerlinNoise(&w.Terrain, Octaves, Persistence)
 }
 
+// drawMap draws a new map based on the world's terrain and the passed MapView
 func (w *World) drawMap(mapView MapView) {
 	// create a new, blank RGBA image
 	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
@@ -134,6 +144,7 @@ func (w *World) drawMap(mapView MapView) {
 	}
 
 	// interpret colors based on the MapView
+	// TODO(karl): clean up magic numbers here
 	switch mapView {
 	case ElevationView:
 		for x := 0; x < w.Width; x++ {
@@ -147,52 +158,58 @@ func (w *World) drawMap(mapView MapView) {
 				w.Map.Set(x, y, palette[color])
 			}
 		}
-	case BiomeView: // TODO(karl): algorithm for interpreting biome based on elevation, climate, and moisture
+	// TODO(karl): algorithm for interpreting biome based on elevation, climate,
+	// and moisture
+	case BiomeView:
 		for x := 0; x < w.Map.Bounds().Max.X; x++ {
 			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case PoliticalView: // TODO(karl): algorithm for interpreting political boundaries based on terrain
+	// TODO(karl): algorithm for interpreting political boundaries based on
+	// terrain
+	case PoliticalView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case ClimateView: // TODO(karl): alogrithm for interpreting climate
+	// TODO(karl): alogrithm for interpreting climate
+	case ClimateView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, palette[i])
 			}
 		}
-	case TopographyView: // black if next to a lower elevation, white if below sealevel or otherwise
+	// black if next to a lower elevation, white if below sealevel or otherwise
+	case TopographyView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], -1.0, 1.0)
 
 				color := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 
-				black := 0
-				white := 31
-				water := 27
-				wave := 17
-				sealevel := 16
-				if color < sealevel {
-					color = water
+				const Black int = 0
+				const White int = 31
+				const Water int = 27
+				const Wave int = 17
+				const SeaLevel int = 16
+				if color < SeaLevel {
+					color = Water
 				} else if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color ||
 					int(scale(w.Terrain[x][chompInt(y+1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
 					int(scale(w.Terrain[x][chompInt(y-1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
 					int(scale(w.Terrain[chompInt(x-1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color {
-					color = black
+					color = Black
 				} else {
-					color = white
+					color = White
 				}
 
-				if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) == sealevel-1 && (y%4 == 0) {
-					color = wave
+				if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) == SeaLevel-1 && (y%4 == 0) {
+					color = Wave
 				}
 
 				w.Map.Set(x, y, palette[color])
@@ -279,15 +296,16 @@ func splitLines(path string) (lines []string, err error) {
 // TODO(karl): clean up syllables so names are pronouncable
 // BUG(karl): name seems to be one-behind
 func (w *World) name() {
-	syllables, err := splitLines("assets/naming/world.txt") // TODO(karl): filename constant
+	// TODO(karl): filename constant
+	syllables, err := splitLines("assets/naming/world.txt")
 	if err != nil {
-		fmt.Print("ERROR: syllables for naming could not be read\n")
+		panic(err)
 	}
 
 	rand.Seed(time.Now().UnixNano())
 
 	var name string
-	// TOD(karl): can this be cleaner without casting?
+	// TODO(karl): can this be cleaner without casting?
 	numOfSyllables := MinSyllables + int(rand.Float64()*float64(MaxSyllables-MinSyllables))
 	for i := 0; i < numOfSyllables; i++ {
 		// TODO(karl): again, can we clean this up?

@@ -14,8 +14,7 @@ const (
 	// (Math.sqrt(2+1)-1)/2
 	SquishConstant = 0.366025403784439
 
-	// NormConstant is used to make the noise values more even
-	// and usable
+	// NormConstant is used to make the noise values more even and usable
 	NormConstant = 47
 )
 
@@ -30,9 +29,11 @@ var gradients = []int8{
 
 var perm []int16
 
-// addOpenSimplexNoise will add Open Simplex Noise
-// to the specified range of the provided 2D grid
-// (BUG) checker pattern on high x or high y values without a corresponding high x or y
+// addOpenSimplexNoise will add Open Simplex Noise to the specified range of the
+// provided 2D grid
+// BUG(karl): checker pattern on high x or high y values without a corresponding
+// high x or y
+// TODO(karl): implement octave and frequncy control
 func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float64 {
 	perm = make([]int16, 256)
 
@@ -58,13 +59,15 @@ func addOpenSimplexNoise(grid [][]float64, minX, maxX, minY, maxY int) [][]float
 
 	for x := minX; x < maxX; x++ {
 		for y := minY; y < maxY; y++ {
-			grid[x][y] = opensimplex(float64(x)/10, float64(y)/10)
+			grid[x][y] = openSimplex(float64(x)/10, float64(y)/10)
 		}
 	}
 	return grid
 }
 
-func opensimplex(x, y float64) float64 {
+// openSimplex calculates a noise value given and x and y coordinate
+// TODO(karl): refactor some shit here so you understand it
+func openSimplex(x, y float64) float64 {
 	stretchOffset := (x + y) * StretchConstant
 	xs := float64(x + stretchOffset)
 	ys := float64(y + stretchOffset)
