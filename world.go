@@ -197,6 +197,8 @@ func (w *World) drawMap(mapView MapView) {
 				const Water int = 27
 				const Wave int = 17
 				const SeaLevel int = 16
+
+				// TODO(karl): Readability is horrible here.
 				if color < SeaLevel {
 					color = Water
 				} else if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color ||

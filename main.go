@@ -63,50 +63,48 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 // TODO(karl): Can these handles be consolidated?
 // Can I check a button id to make this cleaner?
 
-// handles requests from the 'New World' button
+// newWorldHandler handles requests from the 'New World' button
 func newWorldHandler(w http.ResponseWriter, r *http.Request) {
 	world = *newWorld(WorldWidth, WorldHeight)
-
-	// write the encoded image to HTML
 	w.Write([]byte(getEncodedMap()))
 }
 
-// handles a request for a new world name
+// worldNameHandler handles a request for a new world name
 func worldNameHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>" + world.Name + "</h1>"))
 }
 
-// handles request's from the 'Elevation' button
+// elevationViewHandler handles request's from the 'Elevation' button
 func elevationViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(ElevationView)
 	w.Write([]byte(getEncodedMap()))
 }
 
-// handles request's from the 'Biome' button
+// biomeViewHandler handles request's from the 'Biome' button
 func biomeViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(BiomeView)
 	w.Write([]byte(getEncodedMap()))
 }
 
-// handles request's from the 'Political' button
+// politicalViewHandler handles request's from the 'Political' button
 func politicalViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(PoliticalView)
 	w.Write([]byte(getEncodedMap()))
 }
 
-// handles request's from the 'Climate' button
+// climateViewHandler handles request's from the 'Climate' button
 func climateViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(ClimateView)
 	w.Write([]byte(getEncodedMap()))
 }
 
-// handles request's from the 'Topography' button
+// topographyViewHandler handles request's from the 'Topography' button
 func topographyViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(TopographyView)
 	w.Write([]byte(getEncodedMap()))
 }
 
-// encodes the current world's map into a base64 image for HTML
+// getEncodedMap encodes the current world's map into a base64 image for HTML
 func getEncodedMap() string {
 	var buffer bytes.Buffer
 	png.Encode(&buffer, &world.Map)
