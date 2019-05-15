@@ -26,7 +26,7 @@ type MapView uint8
 
 // NoiseType determines the algorithms for world generation
 // for now only Perlin noise and OpenSimplex are implemented
-// TODO(karl): set noise based on user settings
+// TODO(karl): set noise type based on user settings
 type NoiseType uint8
 
 // BiomeType is used to enumerate biomes
@@ -34,65 +34,49 @@ type NoiseType uint8
 type BiomeType uint8
 
 const (
-	// MAPVIEW ENUMERATION -----------------------------------------------------
-
 	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
-
 	// ClimateView shows average yearly temperatures
 	ClimateView
-
 	// PoliticalView shows political boundries
 	PoliticalView
-
 	// BiomeView shows biomes (duh)
 	// TODO(karl): make BiomeType enum
 	BiomeView
-
 	// TopographyView shows elevation through topography levels
 	TopographyView
 
-	// ASSET FILE PATHS --------------------------------------------------------
-
 	// AssetDir is the path to program assets
 	AssetDir string = "assets/"
-
 	// PaletteDir is the path to MapView palettes
 	PaletteDir string = AssetDir + "palettes/"
-
 	// ElevationPalettePath is the path to the ElevationView palette
 	ElevationPalettePath string = PaletteDir + "elevation.png"
-
 	// BiomePalettePath is the path to the BiomeView palette
 	BiomePalettePath string = PaletteDir + "biome.png"
-
 	// PoliticalPalettePath is the path to the PoliticalView palette
 	PoliticalPalettePath string = PaletteDir + "political.png"
-
 	// ClimatePalettePath is the path to the ClimateView palette
 	ClimatePalettePath string = PaletteDir + "climate.png"
-
 	// TopographyPalettePath is the path to the TopographyView palette
 	TopographyPalettePath string = PaletteDir + "topography.png"
 
-	// NOISE CONSTANTS ---------------------------------------------------------
-
-	// Octaves controls how many times the noise function is called
-	Octaves int = 8
-
-	// Persistence controls how much effect the noise will have over time
-	Persistence float64 = 2.0
-
-	// NAMING CONSTANTS --------------------------------------------------------
-
 	// MinSyllables is the minimum number of syllables a name can have
 	MinSyllables int = 2
-
 	// MaxSyllables is the maximum number of syllables a name can have
 	MaxSyllables int = 4
+
+	// MinElev is the minimum elevation possible
+	MinElev float64 = -1.0
+	// MaxElev is the maximum elevation possible
+	MaxElev float64 = 1.0
+	// Octaves controls how many times the noise function is called
+	Octaves int = 8
+	// Persistence controls how much effect the noise will have over time
+	Persistence float64 = 2.0
 )
 
-// newWorld starts acts like a constructor for the World struct
+// newWorld acts like a constructor for the World struct
 // it initializes terrain, names, and map
 func newWorld(width, height int) (w *World) {
 	w = new(World)
@@ -129,18 +113,18 @@ func (w *World) drawMap(mapView MapView) {
 	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
 
 	// get the map's color palette based on the MapView
-	palette := color.Palette{}
+	p := color.Palette{}
 	switch mapView {
 	case ElevationView:
-		palette = createPalette(ElevationPalettePath)
+		p = createPalette(ElevationPalettePath)
 	case BiomeView:
-		palette = createPalette(BiomePalettePath)
+		p = createPalette(BiomePalettePath)
 	case PoliticalView:
-		palette = createPalette(PoliticalPalettePath)
+		p = createPalette(PoliticalPalettePath)
 	case ClimateView:
-		palette = createPalette(ClimatePalettePath)
+		p = createPalette(ClimatePalettePath)
 	case TopographyView:
-		palette = createPalette(TopographyPalettePath)
+		p = createPalette(TopographyPalettePath)
 	}
 
 	// interpret colors based on the MapView
@@ -149,13 +133,14 @@ func (w *World) drawMap(mapView MapView) {
 	case ElevationView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
-				// ensure the elevation is between -1.0 and 1.0
-				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], -1.0, 1.0)
+				// limit elev to suitable range
+				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], MinElev, MaxElev)
 
-				// map the grid value to a color in the palette between 0 and 31
-				color := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				// map the elevation to a color in the palette
+				c := int(scale(w.Terrain[x][y], MinElev, MaxElev, 0.0, float64(len(p)-1)))
 
-				w.Map.Set(x, y, palette[color])
+				// set the pixel color in the RGBA image
+				w.Map.Set(x, y, p[c])
 			}
 		}
 	// TODO(karl): algorithm for interpreting biome based on elevation, climate,
@@ -164,7 +149,7 @@ func (w *World) drawMap(mapView MapView) {
 		for x := 0; x < w.Map.Bounds().Max.X; x++ {
 			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				w.Map.Set(x, y, palette[i])
+				w.Map.Set(x, y, p[i])
 			}
 		}
 	// TODO(karl): algorithm for interpreting political boundaries based on
@@ -173,7 +158,7 @@ func (w *World) drawMap(mapView MapView) {
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				w.Map.Set(x, y, palette[i])
+				w.Map.Set(x, y, p[i])
 			}
 		}
 	// TODO(karl): alogrithm for interpreting climate
@@ -181,7 +166,7 @@ func (w *World) drawMap(mapView MapView) {
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				w.Map.Set(x, y, palette[i])
+				w.Map.Set(x, y, p[i])
 			}
 		}
 	// black if next to a lower elevation, white if below sealevel or otherwise
@@ -214,7 +199,7 @@ func (w *World) drawMap(mapView MapView) {
 					color = Wave
 				}
 
-				w.Map.Set(x, y, palette[color])
+				w.Map.Set(x, y, p[color])
 			}
 		}
 	}
@@ -228,9 +213,10 @@ func createPalette(path string) (p color.Palette) {
 
 	i, _, _ := image.Decode(f)
 
-	// TODO(karl): 32 needs to be replaces by the actual number of colors
-	for x := 0; x < 32; x++ {
-		p = append(p, i.At(x, 0))
+	for x := 0; x < i.Bounds().Max.X; x++ {
+		for y := 0; y < i.Bounds().Max.Y; y++ {
+			p = append(p, i.At(x, y))
+		}
 	}
 
 	return

@@ -22,31 +22,28 @@ const (
 	MaxVectY float64 = 1.0
 )
 
-// grid of 2D gradient vectors
+// gradientField is a grid of 2D vectors
 var gradientField [][]Vector
 
-// adds perlin noise to a given section of a coordinate grid
+// addPerlinNoise adds perlin noise to a given section of a coordinate grid
 func addPerlinNoise(grid *[][]float64, octaves int, persistence float64) {
-	gridWidth := len(*grid)
-	gridHeight := len((*grid)[0])
-	vectXRange := MaxVectX - MinVectX
-	vectYRange := MaxVectY - MinVectY
-
-	rand.Seed(time.Now().UnixNano())
+	gridWidth := len(*grid) + 1
+	gridHeight := len((*grid)[0]) + 1
 
 	// initialized the gradient vector grid
-	gradientField = make([][]Vector, gridWidth+1)
-	for i := range gradientField {
-		gradientField[i] = make([]Vector, gridHeight+1)
-		for j := range gradientField[i] {
-			gradientField[i][j] = Vector{
-				MinVectX + rand.Float64()*vectXRange,
-				MinVectY + rand.Float64()*vectYRange,
+	rand.Seed(time.Now().UnixNano())
+	gradientField = make([][]Vector, gridWidth)
+	for x := range gradientField {
+		gradientField[x] = make([]Vector, gridHeight)
+		for y := range gradientField[x] {
+			gradientField[x][y] = Vector{
+				MinVectX + rand.Float64()*(MaxVectX-MinVectX),
+				MinVectY + rand.Float64()*(MaxVectY-MinVectY),
 			}
 		}
 	}
 
-	// determine elevation a each point using the perlin() function
+	// determine elevation at each point using the perlin() function
 	for x := range *grid {
 		for y := range (*grid)[0] {
 			value := 0.0
@@ -68,41 +65,40 @@ func addPerlinNoise(grid *[][]float64, octaves int, persistence float64) {
 // perlin determines a point's elevation based on
 // surroundings and the gradient vector field
 // BUG, noise is very grid like - might just be perlin
-func perlin(x, y float64) float64 {
-	// determine gradient vectors to interpolate with
-	x0 := int(x)
-	x1 := x0 + 1
-	y0 := int(y)
-	y1 := y0 + 1
+func perlin(x, y float64) (value float64) {
+	// determine the gradient vector to interpolate with
+	// by snapping to gradientField coordinates
+	x0 := int(x) // left side
+	x1 := x0 + 1 // right side
+	y0 := int(y) // top side
+	y1 := y0 + 1 // bottom side
 
-	// determine interpolation weights
-	sx := x - float64(x0)
-	sy := y - float64(y0)
+	sx := x - float64(x0) // determine x-axis interpolation weight
+	sy := y - float64(y0) // determine y-axis interpolation weight
 
-	// interpolate between grid point gradients
-	var n0, n1, ix0, ix1 float64
+	n0 := dotWithGradient(x0, y0, x, y) // top left corner
+	n1 := dotWithGradient(x1, y0, x, y) // top right corner
+	ix0 := interpolate(n0, n1, sx)      // interpolate along the top
 
-	n0 = dotGridGradient(x0, y0, x, y)
-	n1 = dotGridGradient(x1, y0, x, y)
-	ix0 = linearInterpolate(n0, n1, sx)
+	n0 = dotWithGradient(x0, y1, x, y) // bottom left corner
+	n1 = dotWithGradient(x1, y1, x, y) // bottom right corner
+	ix1 := interpolate(n0, n1, sx)     // interpolate along the bottom
 
-	n0 = dotGridGradient(x0, y1, x, y)
-	n1 = dotGridGradient(x1, y1, x, y)
-	ix1 = linearInterpolate(n0, n1, sx)
+	value = interpolate(ix0, ix1, sy) // interpolate along the y-axis
 
-	return linearInterpolate(ix0, ix1, sy)
+	return
 }
 
-// dotGridGradient finds the dot product of the
+// dotWithGradient finds the dot product of the
 // gradient vector and the distance vector
-func dotGridGradient(ix, iy int, x, y float64) float64 {
+func dotWithGradient(ix, iy int, x, y float64) float64 {
 	dx := x - float64(ix)
 	dy := y - float64(iy)
 
 	return dx*gradientField[ix][iy].x + dy*gradientField[ix][iy].y
 }
 
-// interpolates linearly between two points
-func linearInterpolate(a0, a1, w float64) float64 {
+// interpolate interpolates smoothly between two points
+func interpolate(a0, a1, w float64) float64 {
 	return a0 + (w*w*w*(w*(w*(w*6-15)+10)))*(a1-a0)
 }
