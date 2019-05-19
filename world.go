@@ -58,18 +58,27 @@ const (
 // Biomes
 const (
 	Forest Biome = iota
-	Jungle
-	Tundra
-	Mountains
-	Desert
-	Taiga
 	Chapparal
 	Grassland
+	Jungle
+	Tundra
+	Taiga
+	Mountains
+	Desert
 	Arctic
 	Ocean
 	Marine
 	FreshWater
 )
+
+var biomeMap = [8][9]Biome{{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle},
+	{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle, Jungle},
+	{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle, Jungle, Jungle},
+	{Ocean, Ocean, Ocean, Ocean, Ocean, Forest, Forest, Grassland, Grassland},
+	{Ocean, Ocean, Ocean, Ocean, Taiga, Forest, Forest, Grassland, Grassland},
+	{Ocean, Ocean, Ocean, Taiga, Taiga, Forest, Forest, Grassland, Grassland},
+	{Ocean, Ocean, Tundra, Taiga, Taiga, Chapparal, Chapparal, Desert, Desert},
+	{Arctic, Arctic, Arctic, Tundra, Tundra, Chapparal, Chapparal, Desert, Desert}}
 
 // Political Map Colors
 const (
@@ -205,8 +214,7 @@ func (w *World) drawMap(mapView MapView) {
 	case BiomeView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
-				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				w.Map.Set(x, y, p[i])
+
 			}
 		}
 	// TODO(karl): algorithm for interpreting political boundaries based on
@@ -222,8 +230,9 @@ func (w *World) drawMap(mapView MapView) {
 	case ClimateView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
-				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
-				w.Map.Set(x, y, p[i])
+				downess := float64(y) / float64(w.Height)
+				c := int(scale(downess, 0.0, 1.0, 0.0, float64(len(p)-1)))
+				w.Map.Set(x, y, p[c])
 			}
 		}
 	// black if next to a lower elevation, white if below sealevel or otherwise
