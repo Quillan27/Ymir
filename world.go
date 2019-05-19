@@ -29,43 +29,94 @@ type MapView uint8
 // TODO(karl): set noise type based on user settings
 type NoiseType uint8
 
-// BiomeType is used to enumerate biomes
+// Biome is used to enumerate biomes
 // TOOD(karl): make this enumeration
-type BiomeType uint8
+type Biome uint8
 
+// PoliticalColor is used to access colors in
+// the political color palette
+type PoliticalColor uint8
+
+// TopographyColor is used to access colors in
+// the topography color palette
+type TopographyColor uint8
+
+// MapViews
 const (
 	// ElevationView shows terrain elevation
 	ElevationView MapView = iota
-	// ClimateView shows average yearly temperatures
-	ClimateView
+	// BiomeView shows biomes
+	BiomeView
 	// PoliticalView shows political boundries
 	PoliticalView
-	// BiomeView shows biomes (duh)
-	// TODO(karl): make BiomeType enum
-	BiomeView
+	// ClimateView shows average yearly temperatures
+	ClimateView
 	// TopographyView shows elevation through topography levels
 	TopographyView
+)
 
+// Biomes
+const (
+	Forest Biome = iota
+	Jungle
+	Tundra
+	Mountains
+	Desert
+	Taiga
+	Chapparal
+	Grassland
+	Arctic
+	Ocean
+	Marine
+	FreshWater
+)
+
+// Political Map Colors
+const (
+	Red PoliticalColor = iota
+	Blue
+	Green
+	Yellow
+	Purple
+	Orange
+)
+
+// Topography Map Colors
+const (
+	LevelChange TopographyColor = iota
+	Flat
+	Shading
+	Water
+)
+
+// File Paths
+const (
 	// AssetDir is the path to program assets
 	AssetDir string = "assets/"
 	// PaletteDir is the path to MapView palettes
 	PaletteDir string = AssetDir + "palettes/"
 	// ElevationPalettePath is the path to the ElevationView palette
-	ElevationPalettePath string = PaletteDir + "elevation.png"
+	ElevationPalettePath string = PaletteDir + "elevationPalette.png"
 	// BiomePalettePath is the path to the BiomeView palette
-	BiomePalettePath string = PaletteDir + "biome.png"
+	BiomePalettePath string = PaletteDir + "biomePalette.png"
 	// PoliticalPalettePath is the path to the PoliticalView palette
-	PoliticalPalettePath string = PaletteDir + "political.png"
+	PoliticalPalettePath string = PaletteDir + "politicalPalette.png"
 	// ClimatePalettePath is the path to the ClimateView palette
-	ClimatePalettePath string = PaletteDir + "climate.png"
+	ClimatePalettePath string = PaletteDir + "climatePalette.png"
 	// TopographyPalettePath is the path to the TopographyView palette
-	TopographyPalettePath string = PaletteDir + "topography.png"
+	TopographyPalettePath string = PaletteDir + "topographyPalette.png"
+)
 
+// Naming
+const (
 	// MinSyllables is the minimum number of syllables a name can have
 	MinSyllables int = 2
 	// MaxSyllables is the maximum number of syllables a name can have
 	MaxSyllables int = 4
+)
 
+// Terrain Generation
+const (
 	// MinElev is the minimum elevation possible
 	MinElev float64 = -1.0
 	// MaxElev is the maximum elevation possible
@@ -74,6 +125,12 @@ const (
 	Octaves int = 8
 	// Persistence controls how much effect the noise will have over time
 	Persistence float64 = 2.0
+)
+
+// Topographic Levels
+const (
+	// SeaLevel is the topographic level where oceans start
+	SeaLevel int = 15
 )
 
 // newWorld acts like a constructor for the World struct
@@ -146,8 +203,8 @@ func (w *World) drawMap(mapView MapView) {
 	// TODO(karl): algorithm for interpreting biome based on elevation, climate,
 	// and moisture
 	case BiomeView:
-		for x := 0; x < w.Map.Bounds().Max.X; x++ {
-			for y := 0; y < w.Map.Bounds().Max.Y; y++ {
+		for x := 0; x < w.Width; x++ {
+			for y := 0; y < w.Height; y++ {
 				i := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
 				w.Map.Set(x, y, p[i])
 			}
@@ -173,30 +230,28 @@ func (w *World) drawMap(mapView MapView) {
 	case TopographyView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
-				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], -1.0, 1.0)
+				// limit elev to a suitable range
+				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], MinElev, MaxElev)
 
-				color := int(scale(w.Terrain[x][y], -1.0, 1.0, 0.0, 31.0))
+				// map elevation to a topographic level (0 - 31)
+				level := int(scale(w.Terrain[x][y], MinElev, MaxElev, 0.0, 31.0))
 
-				const Black int = 0
-				const White int = 31
-				const Water int = 27
-				const Wave int = 17
-				const SeaLevel int = 16
+				// look at surrounding levels
+				up := int(scale(w.Terrain[x][chompInt(y+1, 0, w.Height-1)], MinElev, MaxElev, 0.0, 31.0))
+				down := int(scale(w.Terrain[x][chompInt(y-1, 0, w.Height-1)], MinElev, MaxElev, 0.0, 31.0))
+				left := int(scale(w.Terrain[chompInt(x-1, 0, w.Width-1)][y], MinElev, MaxElev, 0.0, 31.0))
+				right := int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], MinElev, MaxElev, 0.0, 31.0))
 
-				// TODO(karl): Readability is horrible here.
-				if color < SeaLevel {
+				color := Flat
+				if level <= SeaLevel {
 					color = Water
-				} else if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(w.Terrain[x][chompInt(y+1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(w.Terrain[x][chompInt(y-1, 0, w.Height-1)], -1.0, 1.0, 0.0, 31.0)) < color ||
-					int(scale(w.Terrain[chompInt(x-1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) < color {
-					color = Black
-				} else {
-					color = White
+				} else if level > up || level > down || level > left || level > right {
+					color = LevelChange
+
 				}
 
-				if int(scale(w.Terrain[chompInt(x+1, 0, w.Width-1)][y], -1.0, 1.0, 0.0, 31.0)) == SeaLevel-1 && (y%4 == 0) {
-					color = Wave
+				if level == SeaLevel && y%4 == 0 {
+					color = Shading
 				}
 
 				w.Map.Set(x, y, p[color])
