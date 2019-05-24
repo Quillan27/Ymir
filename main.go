@@ -74,9 +74,9 @@ func worldNameHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>" + world.Name + "</h1>"))
 }
 
-// elevationViewHandler handles request's from the 'Elevation' button
-func elevationViewHandler(w http.ResponseWriter, r *http.Request) {
-	world.drawMap(ElevationView)
+// terrainViewHandler handles request's from the 'Terrain' button
+func terrainViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(TerrainView)
 	w.Write([]byte(getEncodedMap()))
 }
 
@@ -95,12 +95,6 @@ func politicalViewHandler(w http.ResponseWriter, r *http.Request) {
 // climateViewHandler handles request's from the 'Climate' button
 func climateViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(ClimateView)
-	w.Write([]byte(getEncodedMap()))
-}
-
-// topographyViewHandler handles request's from the 'Topography' button
-func topographyViewHandler(w http.ResponseWriter, r *http.Request) {
-	world.drawMap(TopographyView)
 	w.Write([]byte(getEncodedMap()))
 }
 
@@ -125,11 +119,10 @@ func main() {
 	r.HandleFunc("/", pageHandler)
 	r.HandleFunc("/newWorld", newWorldHandler)
 	r.HandleFunc("/worldName", worldNameHandler)
-	r.HandleFunc("/elevationView", elevationViewHandler)
+	r.HandleFunc("/terrainView", terrainViewHandler)
 	r.HandleFunc("/biomeView", biomeViewHandler)
 	r.HandleFunc("/politicalView", politicalViewHandler)
 	r.HandleFunc("/climateView", climateViewHandler)
-	r.HandleFunc("/topographyView", topographyViewHandler)
 
 	// open the server, report errors if needed
 	fmt.Printf("Listening on :8080...\n")

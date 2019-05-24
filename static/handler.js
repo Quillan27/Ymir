@@ -25,7 +25,7 @@ function worldName() {
 	console.log("request sent");
 }
 
-function elevationView() {
+function terrainView() {
 	const xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
@@ -33,7 +33,7 @@ function elevationView() {
 			document.getElementById("map").innerHTML = this.responseText;
 		}
 	};
-	xhttp.open("POST", "/elevationView");
+	xhttp.open("POST", "/terrainView");
 	xhttp.send();
 	console.log("request sent");
 }
@@ -73,19 +73,6 @@ function climateView() {
 		}
 	};
 	xhttp.open("POST", "/climateView");
-	xhttp.send();
-	console.log("request sent");
-}
-
-function topographyView() {
-	const xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			console.log(this.responseText)
-			document.getElementById("map").innerHTML = this.responseText;
-		}
-	};
-	xhttp.open("POST", "/topographyView");
 	xhttp.send();
 	console.log("request sent");
 }

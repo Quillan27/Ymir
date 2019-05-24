@@ -15,36 +15,26 @@ import (
 type World struct {
 	Name    string
 	Terrain [][]float64
-	Width   int // used for readability instead of using
-	Height  int // len(Terrain) or len(Terrain[0])
+	Climate [][]float64
+	Biomes  [][]Biome
+	Width   int
+	Height  int
 	Map     image.RGBA
 }
 
-// MapView determines aspects like color palettes
-// and how the map is generated from the terrain
 type MapView uint8
 
-// NoiseType determines the algorithms for world generation
-// for now only Perlin noise and OpenSimplex are implemented
-// TODO(karl): set noise type based on user settings
 type NoiseType uint8
 
-// Biome is used to enumerate biomes
-// TOOD(karl): make this enumeration
 type Biome uint8
 
-// PoliticalColor is used to access colors in
-// the political color palette
 type PoliticalColor uint8
 
-// TopographyColor is used to access colors in
-// the topography color palette
 type TopographyColor uint8
 
-// MapViews
 const (
-	// ElevationView shows terrain elevation
-	ElevationView MapView = iota
+	// TerrainView shows terrain elevation
+	TerrainView MapView = iota
 	// BiomeView shows biomes
 	BiomeView
 	// PoliticalView shows political boundries
@@ -67,18 +57,7 @@ const (
 	Desert
 	Arctic
 	Ocean
-	Marine
-	FreshWater
 )
-
-var biomeMap = [8][9]Biome{{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle},
-	{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle, Jungle},
-	{Ocean, Ocean, Ocean, Ocean, Ocean, Ocean, Jungle, Jungle, Jungle},
-	{Ocean, Ocean, Ocean, Ocean, Ocean, Forest, Forest, Grassland, Grassland},
-	{Ocean, Ocean, Ocean, Ocean, Taiga, Forest, Forest, Grassland, Grassland},
-	{Ocean, Ocean, Ocean, Taiga, Taiga, Forest, Forest, Grassland, Grassland},
-	{Ocean, Ocean, Tundra, Taiga, Taiga, Chapparal, Chapparal, Desert, Desert},
-	{Arctic, Arctic, Arctic, Tundra, Tundra, Chapparal, Chapparal, Desert, Desert}}
 
 // Political Map Colors
 const (
@@ -104,8 +83,8 @@ const (
 	AssetDir string = "assets/"
 	// PaletteDir is the path to MapView palettes
 	PaletteDir string = AssetDir + "palettes/"
-	// ElevationPalettePath is the path to the ElevationView palette
-	ElevationPalettePath string = PaletteDir + "elevationPalette.png"
+	// TerrainPalettePath is the path to the TerrainView palette
+	TerrainPalettePath string = PaletteDir + "terrainPalette.png"
 	// BiomePalettePath is the path to the BiomeView palette
 	BiomePalettePath string = PaletteDir + "biomePalette.png"
 	// PoliticalPalettePath is the path to the PoliticalView palette
@@ -118,10 +97,10 @@ const (
 
 // Naming
 const (
-	// MinSyllables is the minimum number of syllables a name can have
-	MinSyllables int = 2
-	// MaxSyllables is the maximum number of syllables a name can have
-	MaxSyllables int = 4
+	// MinWorldLength is the minimum number of syllables a name can have
+	MinWorldLength int = 2
+	// MaxWorldLength is the maximum number of syllables a name can have
+	MaxWorldLength int = 4
 )
 
 // Terrain Generation
@@ -152,8 +131,8 @@ func newWorld(width, height int) (w *World) {
 
 	w.generateTerrain()
 
-	// TODO(karl): set to current view, for now ElevationView is default
-	w.drawMap(ElevationView)
+	// TODO(karl): set to current view, for now TerrainView is default
+	w.drawMap(TerrainView)
 
 	w.name()
 
@@ -161,9 +140,6 @@ func newWorld(width, height int) (w *World) {
 }
 
 // generateTerrain initializes the terrain's 2D array and generates elevations
-// TODO(karl): more realistic / complex than just adding noise,
-// generation should be based on plate tectonics and other
-// realistic systems
 func (w *World) generateTerrain() {
 	w.Terrain = make([][]float64, w.Width)
 	for x := range w.Terrain {
@@ -173,16 +149,14 @@ func (w *World) generateTerrain() {
 	addPerlinNoise(&w.Terrain, Octaves, Persistence)
 }
 
-// drawMap draws a new map based on the world's terrain and the passed MapView
+// drawMap draws a new map based on the world's information and the passed MapView
 func (w *World) drawMap(mapView MapView) {
-	// create a new, blank RGBA image
 	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
 
-	// get the map's color palette based on the MapView
 	p := color.Palette{}
 	switch mapView {
-	case ElevationView:
-		p = createPalette(ElevationPalettePath)
+	case TerrainView:
+		p = createPalette(TerrainPalettePath)
 	case BiomeView:
 		p = createPalette(BiomePalettePath)
 	case PoliticalView:
@@ -193,14 +167,12 @@ func (w *World) drawMap(mapView MapView) {
 		p = createPalette(TopographyPalettePath)
 	}
 
-	// interpret colors based on the MapView
-	// TODO(karl): clean up magic numbers here
 	switch mapView {
-	case ElevationView:
+	case TerrainView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				// limit elev to suitable range
-				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], MinElev, MaxElev)
+				w.Terrain[x][y] = chompFlt(w.Terrain[x][y], MinElev, MaxElev)
 
 				// map the elevation to a color in the palette
 				c := int(scale(w.Terrain[x][y], MinElev, MaxElev, 0.0, float64(len(p)-1)))
@@ -209,16 +181,12 @@ func (w *World) drawMap(mapView MapView) {
 				w.Map.Set(x, y, p[c])
 			}
 		}
-	// TODO(karl): algorithm for interpreting biome based on elevation, climate,
-	// and moisture
 	case BiomeView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 
 			}
 		}
-	// TODO(karl): algorithm for interpreting political boundaries based on
-	// terrain
 	case PoliticalView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
@@ -226,21 +194,20 @@ func (w *World) drawMap(mapView MapView) {
 				w.Map.Set(x, y, p[i])
 			}
 		}
-	// TODO(karl): alogrithm for interpreting climate
 	case ClimateView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
+				// TODO(karl): rename downness, this is temporary
 				downess := float64(y) / float64(w.Height)
 				c := int(scale(downess, 0.0, 1.0, 0.0, float64(len(p)-1)))
 				w.Map.Set(x, y, p[c])
 			}
 		}
-	// black if next to a lower elevation, white if below sealevel or otherwise
 	case TopographyView:
 		for x := 0; x < w.Width; x++ {
 			for y := 0; y < w.Height; y++ {
 				// limit elev to a suitable range
-				w.Terrain[x][y] = chompFloat(w.Terrain[x][y], MinElev, MaxElev)
+				w.Terrain[x][y] = chompFlt(w.Terrain[x][y], MinElev, MaxElev)
 
 				// map elevation to a topographic level (0 - 31)
 				level := int(scale(w.Terrain[x][y], MinElev, MaxElev, 0.0, 31.0))
@@ -267,7 +234,6 @@ func (w *World) drawMap(mapView MapView) {
 			}
 		}
 	}
-	w.exportMap() // TOD0(karl): remove this, map to a button
 }
 
 // createPalette returns an array of colors from a premade .png image
@@ -298,9 +264,9 @@ func chompInt(value, min, max int) int {
 	}
 }
 
-// chompFloat keeps a float64 inside a specified range
+// chompFlt keeps a float64 inside a specified range
 // TODO(karl): i hate that these are two functions
-func chompFloat(value, min, max float64) float64 {
+func chompFlt(value, min, max float64) float64 {
 	if value < min {
 		return min
 	} else if value > max {
@@ -316,6 +282,7 @@ func scale(value, oldMin, oldMax, newMin, newMax float64) float64 {
 }
 
 // exportMap exports the current world's map to disk
+// TODO(karl): create an actual save window popup
 func (w *World) exportMap() {
 	f, err := os.Create("out/map.png")
 	if err != nil {
@@ -357,10 +324,8 @@ func (w *World) name() {
 	rand.Seed(time.Now().UnixNano())
 
 	var name string
-	// TODO(karl): can this be cleaner without casting?
-	numOfSyllables := MinSyllables + int(rand.Float64()*float64(MaxSyllables-MinSyllables))
-	for i := 0; i < numOfSyllables; i++ {
-		// TODO(karl): again, can we clean this up?
+	worldLength := MinWorldLength + int(rand.Float64()*float64(MaxWorldLength-MinWorldLength))
+	for i := 0; i < worldLength; i++ {
 		name += syllables[int(rand.Float64()*float64(len(syllables)-1))]
 	}
 

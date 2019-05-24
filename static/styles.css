@@ -4,7 +4,7 @@
 
 h1 {
 	font-family: UnifrakturCook, curisive;
-	font-size: 34px;
+	font-size: 36px;
 	color: #202020;
 	text-align: center;
 }
@@ -18,12 +18,20 @@ div {
 button {
 	background: #e0e0e0;
 	border-radius: 4px;
+	border: 1px solid #202020;
 	font-family: IBM Plex Sans, sans-serif;
 	color: #202020;
 	font-size: 14px;
-	border-style: none;
-	width: 75%;
+	width: 100%;
 	padding: 7px 0px;
+}
+
+button:hover {
+	background: #f0f0f0;
+}
+
+button:active {
+	transform: translateY(4px);
 }
 
 img {
@@ -51,22 +59,22 @@ img {
 
 .Controls {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-	grid-template-areas: "WorldName WorldName WorldName" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "MapViews MapViews MapViews" "NewWorld SaveMap Settings";
+	grid-template-areas: ". WorldName WorldName WorldName ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". . NewWorldButton . ." ". SaveButton . SettingsButton .";
 	grid-area: Controls;
 }
 
-.NewWorld {
-	grid-area: NewWorld;
+.NewWorldButton {
+	grid-area: NewWorldButton;
 }
 
-.SaveMap {
-	grid-area: SaveMap;
+.SaveButton {
+	grid-area: SaveButton;
 }
 
-.Settings {
-	grid-area: Settings;
+.SettingsButton {
+	grid-area: SettingsButton;
 }
 
 .WorldName {
@@ -77,28 +85,24 @@ img {
 .MapViews {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-	grid-template-areas: ". Elevation Elevation Elevation ." ". Biome Biome Biome ." ". Political Political Political ." ". Climate Climate Climate ." ". Topography Topography Topography .";
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	grid-template-areas: ". TerrainButton TerrainButton TerrainButton ." ". BiomeButton BiomeButton BiomeButton ." ". ClimateButton ClimateButton ClimateButton .." ". PoliticalButton PoliticalButton PoliticalButton .";
 	grid-area: MapViews;
 	height: 100%;
 }
 
-.Elevation {
-	grid-area: Elevation;
+.TerrainButton {
+	grid-area: TerrainButton;
 }
 
-.Biome {
-	grid-area: Biome;
+.BiomeButton {
+	grid-area: BiomeButton;
 }
 
-.Political {
-	grid-area: Political;
+.ClimateButton {
+	grid-area: ClimateButton; 
+}
+.PoliticalButton {
+	grid-area: PoliticalButton;
 }
 
-.Climate {
-	grid-area: Climate; 
-}
-
-.Topography {
-	grid-area: Topography;
-}
