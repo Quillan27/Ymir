@@ -34,10 +34,6 @@ button:active {
 	transform: translateY(4px);
 }
 
-img {
-	vertical-align: middle;
-}
-
 .grid-container {
 	display: grid;
 	grid-template-columns: 0.5fr 2fr 0.5fr;
@@ -60,7 +56,7 @@ img {
 .Controls {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	grid-template-areas: ". WorldName WorldName WorldName ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". MapViews MapViews MapViews ." ". . NewWorldButton . ." ". SaveButton . SettingsButton .";
 	grid-area: Controls;
 }
@@ -85,14 +81,18 @@ img {
 .MapViews {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-template-rows: 1fr 1fr 1fr 1fr;
-	grid-template-areas: ". TerrainButton TerrainButton TerrainButton ." ". BiomeButton BiomeButton BiomeButton ." ". ClimateButton ClimateButton ClimateButton .." ". PoliticalButton PoliticalButton PoliticalButton .";
+	grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+	grid-template-areas: ". ElevationButton ElevationButton ElevationButton ." ". TopographyButton TopographyButton TopographyButton ."". BiomeButton BiomeButton BiomeButton ." ". ClimateButton ClimateButton ClimateButton .." ". PoliticalButton PoliticalButton PoliticalButton .";
 	grid-area: MapViews;
 	height: 100%;
 }
 
-.TerrainButton {
-	grid-area: TerrainButton;
+.ElevationButton {
+	grid-area: ElevationButton;
+}
+
+.TopographyButton {
+	grid-area: TopographyButton;
 }
 
 .BiomeButton {

@@ -74,9 +74,15 @@ func worldNameHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("<h1>" + world.Name + "</h1>"))
 }
 
-// terrainViewHandler handles request's from the 'Terrain' button
-func terrainViewHandler(w http.ResponseWriter, r *http.Request) {
-	world.drawMap(TerrainView)
+// elevationViewHandler handles request's from the 'Elevation' button
+func elevationViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(ElevationView)
+	w.Write([]byte(getEncodedMap()))
+}
+
+// topographyViewHandler handles requeAst's from the 'Topography' button
+func topographyViewHandler(w http.ResponseWriter, r *http.Request) {
+	world.drawMap(TopographyView)
 	w.Write([]byte(getEncodedMap()))
 }
 
@@ -119,7 +125,8 @@ func main() {
 	r.HandleFunc("/", pageHandler)
 	r.HandleFunc("/newWorld", newWorldHandler)
 	r.HandleFunc("/worldName", worldNameHandler)
-	r.HandleFunc("/terrainView", terrainViewHandler)
+	r.HandleFunc("/elevationView", elevationViewHandler)
+	r.HandleFunc("/topographyView", topographyViewHandler)
 	r.HandleFunc("/biomeView", biomeViewHandler)
 	r.HandleFunc("/politicalView", politicalViewHandler)
 	r.HandleFunc("/climateView", climateViewHandler)
