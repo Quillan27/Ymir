@@ -1,15 +1,16 @@
 function newWorld() {
+	var needWorld = true;
 	const xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if(this.readyState == 4 && this.status == 200) {
 			console.log(this.responseText)
 			document.getElementById("map").innerHTML = this.responseText;
+			worldName();
 		}
 	};
 	xhttp.open("POST", "/newWorld");
 	xhttp.send();
 	console.log("request sent");
-	worldName();
 }
 
 function worldName() {

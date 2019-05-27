@@ -77,8 +77,8 @@ func newWorld(width, height int) *World {
 	w.Height = height
 
 	w.generateTerrain()
-	w.name()
 	w.drawMap(currentView)
+	w.name()
 
 	return w
 }
