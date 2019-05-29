@@ -41,9 +41,9 @@ const (
 
 const (
 	// MinElev is the minimum elevation possible
-	MinElev int = -1
+	MinElev float64 = -1.0
 	// MaxElev is the maximum elevation possible
-	MaxElev int = 1
+	MaxElev float64 = 1.0
 	// Octaves controls how many times the noise function is called
 	Octaves int = 8
 	// Persistence controls how much effect the noise will have over time
@@ -61,9 +61,6 @@ const (
 	Shading
 	// Water is the index for the color used for any point at or below SeaLevel
 	Water
-	// LevelCount is the number of topographic levels the terrain is split into
-	// I found 31 to be the sweet spot to see general trends in terrain as well as detail
-	LevelCount int = 31
 )
 
 var currentView = ElevationView
@@ -77,8 +74,8 @@ func newWorld(width, height int) *World {
 	w.Height = height
 
 	w.generateTerrain()
-	w.drawMap(currentView)
 	w.name()
+	w.drawMap(currentView)
 
 	return w
 }
@@ -128,18 +125,18 @@ func (w *World) drawMap(mapView MapView) {
 			var color uint8
 			switch mapView {
 			case ElevationView:
-				color = uint8(scale(w.Terrain[x][y], MinElev, MaxElev, 0, len(palette)-1))
+				color = uint8(calcLevel(w.Terrain[x][y], len(palette)-1))
 			case TopographyView:
-				seaLevel := LevelCount / 2
+				const MaxLevel int = 31 // I found 31 to produce the best results
+				seaLevel := MaxLevel / 2
 				// map elevation to a topographic level (0 - 31)
-				level := int(scale(w.Terrain[x][y], MinElev, MaxElev, 0.0, LevelCount))
+				level := calcLevel(w.Terrain[x][y], MaxLevel)
 
 				// look at surrounding levels
-				up := int(scale(w.Terrain[x][chomp(y+1, 0, w.Height-1)], MinElev, MaxElev, 0.0, LevelCount))
-				down := int(scale(w.Terrain[x][chomp(y-1, 0, w.Height-1)], MinElev, MaxElev, 0.0, LevelCount))
-				left := int(scale(w.Terrain[chomp(x-1, 0, w.Width-1)][y], MinElev, MaxElev, 0.0, LevelCount))
-				right := int(scale(w.Terrain[chomp(x+1, 0, w.Width-1)][y], MinElev, MaxElev, 0.0, LevelCount))
-
+				up := calcLevel(w.Terrain[x][min(y+1, w.Height-1)], MaxLevel)
+				down := calcLevel(w.Terrain[x][max(y-1, 0)], MaxLevel)
+				left := calcLevel(w.Terrain[max(x-1, 0)][y], MaxLevel)
+				right := calcLevel(w.Terrain[min(x+1, w.Width-1)][y], MaxLevel)
 				color = Flat
 				if level <= seaLevel {
 					color = Water
@@ -179,9 +176,28 @@ func createPalette(path string) (p color.Palette) {
 	return
 }
 
-// scale maps a number in one range to another range
-func scale(value float64, oldMin, oldMax, newMin, newMax int) float64 {
-	return (value-float64(oldMin))*float64(newMax-newMin)/float64(oldMax-oldMin) + float64(newMin)
+// calcLevel snaps an float elevation onto an integer topographic level
+// used for drawing maps
+func calcLevel(elevation float64, maxLevel int) int {
+	return int((elevation - MinElev) * float64(maxLevel) / (MaxElev - MinElev))
+}
+
+// min returns the smaller of the two provided integers
+// a math library function exists for this but only involves floats
+// so lots of castiing is needed for something so simple
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+// max returns the larger of the two provided integers
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
 }
 
 // chompInt keeps an int inside a specified range
