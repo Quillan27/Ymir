@@ -65,19 +65,6 @@ function biomeView() {
 	console.log("request sent");
 }
 	
-function politicalView() {
-	const xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if(this.readyState == 4 && this.status == 200) {
-			console.log(this.responseText)
-			document.getElementById("map").innerHTML = this.responseText;
-		}
-	};
-	xhttp.open("POST", "/politicalView");
-	xhttp.send();
-	console.log("request sent");
-}
-
 function climateView() {
 	const xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {

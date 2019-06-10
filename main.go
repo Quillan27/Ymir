@@ -68,11 +68,6 @@ func biomeViewHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(getEncodedMap()))
 }
 
-func politicalViewHandler(w http.ResponseWriter, r *http.Request) {
-	world.drawMap(PoliticalView)
-	w.Write([]byte(getEncodedMap()))
-}
-
 func climateViewHandler(w http.ResponseWriter, r *http.Request) {
 	world.drawMap(ClimateView)
 	w.Write([]byte(getEncodedMap()))
@@ -101,7 +96,6 @@ func main() {
 	r.HandleFunc("/elevationView", elevationViewHandler)
 	r.HandleFunc("/topographyView", topographyViewHandler)
 	r.HandleFunc("/biomeView", biomeViewHandler)
-	r.HandleFunc("/politicalView", politicalViewHandler)
 	r.HandleFunc("/climateView", climateViewHandler)
 
 	// open the server, report errors if needed

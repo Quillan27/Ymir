@@ -16,7 +16,6 @@ type World struct {
 	Terrain  [][]float64
 	Biomes   [][]BiomeID
 	Climate  [][]uint8
-	Politics [][]uint8
 	Width    int
 	Height   int
 	Map      image.RGBA
@@ -28,7 +27,6 @@ const (
 	ElevationView MapView = iota
 	TopographyView
 	BiomeView
-	PoliticalView
 	ClimateView
 )
 
@@ -72,11 +70,6 @@ func newWorld(width, height int) *World {
 	w.Biomes = make([][]BiomeID, w.Width)
 	for x := range w.Biomes {
 		w.Biomes[x] = make([]BiomeID, w.Height)
-	}
-
-	w.Politics = make([][]uint8, w.Width)
-	for x := range w.Politics {
-		w.Politics[x] = make([]uint8, w.Height)
 	}
 
 	w.generate()
@@ -146,16 +139,6 @@ func (w *World) drawMap(mapView MapView) {
 		for x := range w.Climate {
 			for y := range w.Climate[x] {
 				color = w.Climate[x][y]
-				w.Map.Set(x, y, palette[color])
-			}
-		}
-	case PoliticalView:
-		palette = createPalette("assets/palettes/political.png")
-
-		var color uint8
-		for x := range w.Politics {
-			for y := range w.Politics[x] {
-				color = w.Politics[x][y]
 				w.Map.Set(x, y, palette[color])
 			}
 		}
