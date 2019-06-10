@@ -92,6 +92,7 @@ func (w *World) drawMap(mapView MapView) {
 	case ElevationView:
 		palette = createPalette("assets/palettes/elevation.png")
 
+		var color uint8
 		for x := range w.Terrain {
 			for y := range w.Terrain[x] {
 				color = uint8(calculateTopographicLevel(w.Terrain[x][y], len(palette)-1))
@@ -103,6 +104,8 @@ func (w *World) drawMap(mapView MapView) {
 
 		const MaxLevel int = 31 // I found 31 to produce the best results
 		seaLevel := MaxLevel / 2
+
+		var color uint8
 		for x := range w.Terrain {
 			for y := range w.Terrain[x] {
 				// map elevation to a topographic level (0 - 31)
@@ -129,18 +132,33 @@ func (w *World) drawMap(mapView MapView) {
 	case BiomeView:
 		palette = createPalette("assets/palettes/biome.png")
 
-		color = uint8(w.Biomes[x][y])
-		w.Map.Set(x, y, palette[color])
+		var color uint8
+		for x := range w.Biomes {
+			for y := range w.Biomes[x] {
+				color = uint8(w.Biomes[x][y])
+				w.Map.Set(x, y, palette[color])
+			}
+		}
 	case ClimateView:
 		palette = createPalette("assets/palettes/climate.png")
 
-		color = w.Climate[x][y]
-		w.Map.Set(x, y, palette[color])
+		var color uint8
+		for x := range w.Climate {
+			for y := range w.Climate[x] {
+				color = w.Climate[x][y]
+				w.Map.Set(x, y, palette[color])
+			}
+		}
 	case PoliticalView:
 		palette = createPalette("assets/palettes/political.png")
 
-		color = w.Politics[x][y]
-		w.Map.Set(x, y, palette[color])
+		var color uint8
+		for x := range w.Politics {
+			for y := range w.Politics[x] {
+				color = w.Politics[x][y]
+				w.Map.Set(x, y, palette[color])
+			}
+		}
 	}
 
 	currentView = mapView
@@ -210,7 +228,7 @@ func (w *World) addName() {
 	w.Name = strings.Title(name)
 }
 
-func splitLines(path string) []string, error {
+func splitLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
