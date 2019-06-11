@@ -1,6 +1,24 @@
 TERRAIN
 
+Seperate Map into tiles
+- Delauney Triangulation?
+- Poisson Sampling?
+- Voronoi Things?
+
+Select tiles to be a part of landmass
+- All border tiles are ocean
+- Tiles group up
+- Grouping strength can be changed, all the way to a single island world
+
+Apply basic Perlin noise to the Map
+- enough for rough coastlines
+- smooth enough for hills
+
+Simulate erosion??
+
 CLIMATE
+- Add smooth perlin noise for randomness
+- Add north to south gradient
 
-BIOMES
-
+BIOME
+- Map climate, elevation, proximity to water to biomes

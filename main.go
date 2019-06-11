@@ -20,8 +20,8 @@ type Page struct {
 const (
 	HTMLPath    string = "static/layout.html"
 	PageTitle   string = "Ymir"
-	WorldWidth  int    = 750
-	WorldHeight int    = 600
+	WorldWidth  int    = 512 
+	WorldHeight int    = 512 
 )
 
 var (

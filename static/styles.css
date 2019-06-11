@@ -10,7 +10,6 @@ h1 {
 }
 
 div {
-	border: solid;
 	display: flex;
 	align-items: center;
 	justify-content: center;
