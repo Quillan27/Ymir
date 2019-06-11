@@ -28,7 +28,7 @@ func (w *World) generate() {
 		w.Terrain[seeds[i].x][seeds[i].y] = 2 // BLUE
 	}
 
-	// draw cell boundaries
+	// draw cell boundaries --- TESTING ONLY
 	fmt.Print("Drawing cell boundaries...\n")
 	for i := range seeds {
 		fmt.Print("\tDrawing Cell ", i, "...\n")
