@@ -42,7 +42,7 @@ const (
 	MaxElev float64 = 1.0
 	// Octaves is how many times the perlin function is run by the
 	// addPerlinNoise() function.
-	Octaves int = 8
+	Octaves int = 9
 	// Persistence is the rate of decay of the amplitude of the noise
 	// for each octave of perlin noise added.
 	// Smaller numbers for rougher terrain, larger for smoother.

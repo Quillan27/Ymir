@@ -7,64 +7,51 @@
 	</head>
 	<body>
 		<script src="static/handler.js"></script>
+
 		<div class="grid-container">
-			<div class="Content">
-				<div id="map" class="Map"></div>
-				<div class="Controls">
-					<div id="worldName" class="WorldName">
-							<h1>{{.Name}}</h1>
+			<div id="map" class="Map"></div>
+			<div class="Information">
+				<div id="worldName" class="WorldName"><h1>{{.Name}}</h1></div>
+				<div class="MapViews">
+					<div class="ElevationView">
+						<button onclick="elevationView()">
+							<img src="/static/icons/elevationIcon.png">
+							<br>Elevation
+						</button>
 					</div>
-
-					<div class="MapViews">
-						<div class="ElevationButton">
-							<button onclick="elevationView()">
-								<img src="/static/icons/elevationIcon.png">
-								<br>Elevation
-							</button>
-						</div>
-						
-						<div class="TopographyButton">
-							<button onclick="topographyView()">
-								<img src="/static/icons/topographyIcon.png">
-								<br>Topography
-							</button>
-						</div>
-
-						<div class="BiomeButton">
-							<button onclick="biomeView()">
-								<img src="/static/icons/biomeIcon.png">
-								<br>Biome
-							</button>
-						</div>
-						
-						<div class="ClimateButton">
-							<button onclick="climateView()">
-								<img src="/static/icons/climateIcon.png">
-								<br>Climate
-							</button>
-						</div>
+					<div class="BiomeView">
+						<button onclick="biomeView()">
+							<img src="/static/icons/biomeIcon.png">
+							<br>Biome
+						</button>
 					</div>
-					
-					<div class="NewWorldButton">
+					<div class="TopographyView">
+						<button onclick="topographyView()">
+							<img src="/static/icons/topographyIcon.png">
+							<br>Topography
+						</button>
+					</div>
+					<div class="ClimateView">
+						<button onclick="climateView()">
+							<img src="/static/icons/climateIcon.png">
+							<br>Climate
+						</button>
+					</div>
+					<div class="NewWorld">
 						<button onclick="newWorld()">
 							<img src="/static/icons/newWorldIcon.png">
-							<br>
+							<br>New World
 						</button>
 					</div>
-
-					<div class="SaveButton">
+					<div class="SaveMap">
 						<button onclick="saveMap()">
 							<img src="/static/icons/saveIcon.png">
-							<br>
+							<br>Save Map
 						</button>
 					</div>
-
-					<div class="SettingsButton">
-						<button onclick="changeSettingsButton()">
-							<img src="/static/icons/settingsIcon.png">
-							<br>
-						</button>
-					</div>
+				</div>
+				<div class="Settings">
+					<button>Settings Here</button>
 				</div>
 			</div>
 		</div>
