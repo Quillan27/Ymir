@@ -12,42 +12,61 @@ import (
 )
 
 type World struct {
-	Name     string
-	Terrain  [][]uint8
-	Biomes   [][]BiomeID 
-	Climate  [][]uint8
-	Width    int
-	Height   int
-	Map      image.RGBA
+	Name    string
+	Terrain [][]float64
+	Biomes  [][]BiomeID
+	Climate [][]uint8
+	Width   int
+	Height  int
+	Map     image.RGBA
 }
 
+// MapView is an enumeration for marking the view-mode of the world's map.
 type MapView uint8
 
 const (
+	// ElevationView shows terrain elevation with a colorful palette.
 	ElevationView MapView = iota
+	// Topography shows terrain elevation by marking topographic level changes.
 	TopographyView
+	// BiomeView shows terrain biomes based on climate and elevation.
 	BiomeView
+	// ClimateView shows the world climate patterns, hot to cold.
 	ClimateView
 )
 
 const (
-	MinElev     uint8 = 0
-	MaxElev     uint8 = 255
-	Octaves     int     = 8
+	// MinElev is the minimum elevation for terrain possible
+	MinElev float64 = -1.0
+	// MaxElev is the maximum elevation for terrain possible
+	MaxElev float64 = 1.0
+	// Octaves is how many times the perlin function is run by the
+	// addPerlinNoise() function.
+	Octaves int = 8
+	// Persistence is the rate of decay of the amplitude of the noise
+	// for each octave of perlin noise added.
+	// Smaller numbers for rougher terrain, larger for smoother.
 	Persistence float64 = 2.0
 )
 
 const (
-	LevelChange uint8 = iota
+	LevelChange int = iota
 	Flat
 	Shading
 	Water
 )
 
+// BiomeID is an enumeration for storing ID numbers for biomes.
 type BiomeID uint8
 
 const (
-	// TODO(karl): add BiomeID's here
+	Forest = iota
+	Mountain
+	Desert
+	Ocean
+	Marine
+	Jungle
+	// ...
 )
 
 var currentView = ElevationView
@@ -57,10 +76,11 @@ func newWorld(width, height int) *World {
 	w.Width = width
 	w.Height = height
 
-	w.Terrain = make([][]uint8, w.Width)
+	w.Terrain = make([][]float64, w.Width)
 	for x := range w.Terrain {
-		w.Terrain[x] = make([]uint8, w.Height)
+		w.Terrain[x] = make([]float64, w.Height)
 	}
+	addPerlinNoise(&w.Terrain, Octaves, Persistence)
 
 	w.Climate = make([][]uint8, w.Width)
 	for x := range w.Climate {
@@ -72,32 +92,19 @@ func newWorld(width, height int) *World {
 		w.Biomes[x] = make([]BiomeID, w.Height)
 	}
 
-	w.generate()
 	w.addName()
 	w.drawMap(currentView)
 	return w
 }
 
-// TEMPORARY - for testing algorithms
 func (w *World) drawMap(mapView MapView) {
 	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
-	palette := createPalette("assets/palettes/test.png")
-	for x := range w.Terrain {
-		for y:= range w.Terrain[x] {
-			w.Map.Set(x, y, palette[w.Terrain[x][y]])
-		}
-	}
-	currentView = mapView
-}
-/*
-func (w *World) drawMap(mapView MapView) {
-	w.Map = *image.NewRGBA(image.Rect(0, 0, w.Width, w.Height))
-	palette := colkor.Palette{}
+	palette := color.Palette{}
 	switch mapView {
 	case ElevationView:
 		palette = createPalette("assets/palettes/elevation.png")
 
-		var color uint8
+		var color int
 		for x := range w.Terrain {
 			for y := range w.Terrain[x] {
 				color = calculateTopographicLevel(w.Terrain[x][y], len(palette)-1)
@@ -107,10 +114,10 @@ func (w *World) drawMap(mapView MapView) {
 	case TopographyView:
 		palette = createPalette("assets/palettes/topography.png")
 
-		const MaxLevel uint8 = 31 // I found 31 to produce the best results
-		seaLevel := uint8(MaxLevel / 2)
+		const MaxLevel int = 31 // I found 31 to produce the best results
+		seaLevel := MaxLevel / 2
 
-		var color uint8
+		var color int
 		for x := range w.Terrain {
 			for y := range w.Terrain[x] {
 				// map elevation to a topographic level (0 - 31)
@@ -137,20 +144,20 @@ func (w *World) drawMap(mapView MapView) {
 	case BiomeView:
 		palette = createPalette("assets/palettes/biome.png")
 
-		var color uint8
+		var color int
 		for x := range w.Biomes {
 			for y := range w.Biomes[x] {
-				color = uint8(w.Biomes[x][y])
+				color = int(w.Biomes[x][y])
 				w.Map.Set(x, y, palette[color])
 			}
 		}
 	case ClimateView:
 		palette = createPalette("assets/palettes/climate.png")
 
-		var color uint8
+		var color int
 		for x := range w.Climate {
 			for y := range w.Climate[x] {
-				color = w.Climate[x][y]
+				color = int(w.Climate[x][y])
 				w.Map.Set(x, y, palette[color])
 			}
 		}
@@ -158,7 +165,7 @@ func (w *World) drawMap(mapView MapView) {
 
 	currentView = mapView
 }
-*/
+
 func createPalette(path string) color.Palette {
 	file, _ := os.Open(path)
 	defer file.Close()
@@ -174,11 +181,10 @@ func createPalette(path string) color.Palette {
 
 	return palette
 }
-/*
-func calculateTopographicLevel(elevation uint8, maxLevel uint8) uint8 {
-	return int((elevation - MinElev) * float64(maxLevel) / (MaxElev - MinElev))
-} */
 
+func calculateTopographicLevel(elevation float64, maxLevel int) int {
+	return int((elevation - MinElev) * float64(maxLevel) / (MaxElev - MinElev))
+}
 func min(x, y int) int {
 	if x < y {
 		return x
